@@ -9,6 +9,11 @@ app.use(express.static(__dirname + "/web"));
 // 設定路由處理程序
 app.get('/api', (req, res) => {
     const { token, freq, up } = req.query; // 從查詢參數中獲取 freq 和 up 的值
+    //如果token或freq或up是undefine則返回data error!
+    if (token === undefined || freq === undefined || up === undefined) {
+        res.send('data error!');
+        return;
+    }
     const timestamp = new Date().toISOString(); // 獲取當前時間
     try {
         fs.accessSync(`./web/api/${token}.json`, fs.constants.F_OK);
