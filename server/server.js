@@ -5,18 +5,18 @@ const path = require('path');
 
 // 創建 Express 應用程式
 const app = express();
-
+app.use(express.static(__dirname + "/web"));
 // 設定路由處理程序
 app.get('/api', (req, res) => {
     const { token, freq, up } = req.query; // 從查詢參數中獲取 freq 和 up 的值
     const timestamp = new Date().toISOString(); // 獲取當前時間
     try {
-        fs.accessSync(`./api/${token}.json`, fs.constants.F_OK);
+        fs.accessSync(`./web/api/${token}.json`, fs.constants.F_OK);
         console.log('檔案已存在。');
     } catch (err) {
         // 檔案不存在，可以在這裡新增一個檔案
         try {
-            fs.writeFileSync(`./api/${token}.json`, '[]');
+            fs.writeFileSync(`./web/api/${token}.json`, '[]');
             console.log('成功新增檔案！');
         } catch (writeErr) {
             console.error('無法新增檔案：', writeErr);
@@ -24,7 +24,7 @@ app.get('/api', (req, res) => {
     }
 
     // 讀取現有的資料
-    const filePath = path.join(__dirname, 'api', `${token}.json`);
+    const filePath = path.join(__dirname, 'web/api', `${token}.json`);
     let existingData = [];
     try {
         const dataBuffer = fs.readFileSync(filePath);
