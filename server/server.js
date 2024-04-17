@@ -55,7 +55,7 @@ app.get('/api', (req, res) => {
 });
 
 // 啟動伺服器
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 80;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
