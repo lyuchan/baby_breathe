@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@line/bot-sdk": "^9.2.0",
+    "express": "^4.19.2"
+  }
+}
