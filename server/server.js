@@ -121,7 +121,7 @@ const textHandler = (replyToken, inputText) => {
     try {
         let resText;
         switch (inputText) {
-            case '你好':
+            case '/uuid':
                 resText = '你好啊';
                 break;
             case 'test':
