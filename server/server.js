@@ -1,16 +1,16 @@
-// 引入必要的模組
+/////////////////////////////////////引入必要的模組/////////////////////////////////////
 require('dotenv').config();//環境變數
 const fs = require('fs');//系統文件
 const path = require('path');//目錄
 const express = require('express');//網頁
 const { Client, middleware } = require('@line/bot-sdk');//line bot
-
+/////////////////////////////////////變數區/////////////////////////////////////
 // 創建 Express 應用程式
 const app = express();
 app.use(express.static(__dirname + "/web"));
 // 設定路由處理程序
 
-//api功能
+/////////////////////////////////////api功能/////////////////////////////////////
 app.get('/api', (req, res) => {
     const { token, freq, up } = req.query; // 從查詢參數中獲取 freq 和 up 的值
     //如果token或freq或up是undefine則返回data error!
@@ -59,7 +59,7 @@ app.get('/api', (req, res) => {
 });
 
 
-//linebot功能
+/////////////////////////////////////linebot功能/////////////////////////////////////
 const lineConfig = {
     channelAccessToken: process.env["CHANNEL_ACCESS_TOKEN"],
     channelSecret: process.env["CHANNEL_SECRET"]
@@ -144,7 +144,7 @@ const textHandler = (replyToken, inputText) => {
 
 }
 
-// 啟動伺服器
+/////////////////////////////////////啟動伺服器/////////////////////////////////////
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
