@@ -7,6 +7,9 @@ const { Client, middleware } = require('@line/bot-sdk');//line bot
 /////////////////////////////////////變數區/////////////////////////////////////
 // 創建 Express 應用程式
 const app = express();
+var bodyParser = require('body-parser');
+app.use(bodyParser.json({ limit: '5000mb' }));
+app.use(bodyParser.urlencoded({ limit: '5000mb', extended: true }));
 app.use(express.static(__dirname + "/web"));
 // 設定路由處理程序
 
@@ -58,7 +61,21 @@ app.get('/api', (req, res) => {
 
 });
 
+/////////////////////////////////////接收圖片/////////////////////////////////////
+app.post('/uploadimg', function (req, res) {
+    //  console.log(req.body);
+    let data = decodeURI(req.body.base64)
+    let token = decodeURI(req.body.token)
+    //將data轉為png並儲存，檔名為當下時間
 
+    var date = new Date();
+    var filename = date.getTime() + '.png';
+    fs.writeFileSync(`.png`, data, 'base64');
+    console.log(filename);
+    res.send('OK');
+
+
+});
 /////////////////////////////////////linebot功能/////////////////////////////////////
 const lineConfig = {
     channelAccessToken: process.env["CHANNEL_ACCESS_TOKEN"],
@@ -67,26 +84,6 @@ const lineConfig = {
 const client = new Client(lineConfig);
 app.post('/linebotwebhook', middleware(lineConfig), async (req, res) => {
     try {
-        /*{  req.body長這樣
-            "events": [
-                {
-                    "type": "message",
-                    "replyToken": "uuidhere",
-                    "source": {
-                        "userId": "xxxx"",
-                        "type": "user"
-                    },
-                    "timestamp": 1592813446208,
-                    "mode": "active",
-                    "message": {
-                        "type": "text",
-                        "id": "12188948022060",
-                        "text": "X"
-                    }
-                }
-            ],
-            "destination": "xxx"
-        }*/
         let result = await req.body.events.map(handleEvent);
         res.json(result);
     }
@@ -96,6 +93,7 @@ app.post('/linebotwebhook', middleware(lineConfig), async (req, res) => {
 });
 
 const handleEvent = (event) => {
+    console.log(event)
     switch (event.type) {
         case 'join': //這隻機器人加入別人的群組
             break;
