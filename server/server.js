@@ -67,14 +67,10 @@ app.post('/uploadimg', function (req, res) {
     let data = decodeURI(req.body.base64)
     let token = decodeURI(req.body.token)
     //將data轉為png並儲存，檔名為當下時間
-
     var date = new Date();
-    var filename = date.getTime() + '.png';
-    fs.writeFileSync(`.png`, data, 'base64');
-    console.log(filename);
-    res.send('OK');
-
-
+    let filename = `${token}${date.getTime()}.png`
+    fs.writeFileSync(filename, data, 'base64');
+    res.send(encodeURI(filename));
 });
 /////////////////////////////////////linebot功能/////////////////////////////////////
 const lineConfig = {
