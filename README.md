@@ -1,14 +1,22 @@
 # 嬰兒呼吸偵測
 ## 軟體api規則
-### 上傳圖片
-post https://baby.lyuchan.com/uploadimg
+### upload data
+GET https://baby.lyuchan.com/api/?freq=data1&up=data2&token=data3
+|key|valuetype|note|
+|-|-|-|
+|freq|int|每分鐘呼吸頻率|
+|up|boolean|是否翻身|
+|token|string|就是token|
+---
+### upload img.
+POST https://baby.lyuchan.com/uploadimg
 
-use x-www-form-urlencoded
+use body x-www-form-urlencoded
 
-|key|value|
-|-|-|
-|img|img.base64|
-|token|img.name|
+|key|valuetype|note|
+|-|-|-|
+|img|string|圖片base64的文字們|
+|token|string|就是token|
 
 js example
 ```js
