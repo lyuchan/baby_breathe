@@ -67,12 +67,11 @@ app.post('/uploadimg', function (req, res) {
 
     let data = decodeURI(req.body.img)
     let token = decodeURI(req.body.token)
-    if(data==undefined||token==undefined){
+    if (data == undefined || token == undefined) {
         res.send('data error!');
         return;
     }
     let filename = `${token}.png`
-    console.log(`data is: ${data} token is: ${token}`);
     fs.writeFileSync(`./web/img/${filename}`, data, 'base64');
     res.send(encodeURI(filename));
 });
