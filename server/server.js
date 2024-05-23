@@ -71,8 +71,6 @@ app.post('/uploadimg', function (req, res) {
         res.send('data error!');
         return;
     }
-    console.log(data)
-    console.log(token)
     let filename = `${token}.png`
     fs.writeFileSync(`./web/img/${filename}`, data, 'base64');
     res.send(encodeURI(filename));
