@@ -64,7 +64,7 @@ app.get('/api', (req, res) => {
 /////////////////////////////////////接收圖片/////////////////////////////////////
 app.post('/uploadimg', function (req, res) {
     //  console.log(req.body);
-    let data = decodeURI(req.body.base64)
+    let data = decodeURI(req.body.img)
     let token = decodeURI(req.body.token)
     //將data轉為png並儲存，檔名為當下時間
     var date = new Date();
