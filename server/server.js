@@ -67,7 +67,7 @@ app.post('/uploadimg', function (req, res) {
 
     let data = decodeURI(req.body.img)
     let token = decodeURI(req.body.token)
-    if (data == undefined || token == undefined) {
+    if (data == "undefined" || token == "undefined") {
         res.send('data error!');
         return;
     }
