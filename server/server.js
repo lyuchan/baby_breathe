@@ -7,6 +7,7 @@ const { Client, middleware } = require('@line/bot-sdk');//line bot
 /////////////////////////////////////變數區/////////////////////////////////////
 // 創建 Express 應用程式
 const app = express();
+const lineapp = express();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json({ limit: '5000mb' }));
 app.use(bodyParser.urlencoded({ limit: '5000mb', extended: true }));
@@ -78,7 +79,7 @@ const lineConfig = {
     channelSecret: process.env["CHANNEL_SECRET"]
 };
 const client = new Client(lineConfig);
-app.post('/linebotwebhook', middleware(lineConfig), async (req, res) => {
+lineapp.post('/linebotwebhook', middleware(lineConfig), async (req, res) => {
     try {
         let result = await req.body.events.map(handleEvent);
         res.json(result);
@@ -89,7 +90,7 @@ app.post('/linebotwebhook', middleware(lineConfig), async (req, res) => {
 });
 
 const handleEvent = (event) => {
-    console.log(event)
+   
     switch (event.type) {
         case 'join': //這隻機器人加入別人的群組
             break;
@@ -142,4 +143,7 @@ const textHandler = (replyToken, inputText) => {
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
+});
+lineapp.listen(port+1, () => {
+    console.log(`Line server is running on port ${port+1}`);
 });
