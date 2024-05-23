@@ -64,12 +64,11 @@ app.get('/api', (req, res) => {
 
 /////////////////////////////////////接收圖片/////////////////////////////////////
 app.post('/uploadimg', function (req, res) {
-    //  console.log(req.body);
+
     let data = decodeURI(req.body.img)
     let token = decodeURI(req.body.token)
-    //將data轉為png並儲存，檔名為當下時間
-    var date = new Date();
     let filename = `${token}.png`
+    console.log(`data is: ${data} token is: ${token}`);
     fs.writeFileSync(`./web/img/${filename}`, data, 'base64');
     res.send(encodeURI(filename));
 });
@@ -109,7 +108,7 @@ const handleEvent = (event) => {
                                 resText = `測試`;
                                 break
                             default:
-                                resText = '請親臨院所';
+                                resText = '我不太清楚你再說什麼';
                         }
                         return client.replyMessage(event.replyToken, {
                             type: 'text',
@@ -126,32 +125,6 @@ const handleEvent = (event) => {
     }
 }
 
-const textHandler = (replyToken, inputText) => {
-    try {
-        let resText;
-        switch (inputText) {
-            case '/uuid':
-                resText = '你好啊';
-                break;
-            case 'test':
-                resText = `測試`;
-                break
-            //             case 'Q&A':
-            //                 return client.replyMessage(replyToken, imageMap());
-            //             case 'q&a':
-            //                 return client.replyMessage(replyToken, carousel());
-            default:
-                resText = '請親臨院所';
-        }
-        return client.replyMessage(replyToken, {
-            type: 'text',
-            text: resText
-        });
-    } catch (err) {
-        console.log(err)
-    }
-
-}
 
 /////////////////////////////////////啟動伺服器/////////////////////////////////////
 const port = process.env.PORT || 3000;
