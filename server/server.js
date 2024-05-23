@@ -90,7 +90,7 @@ lineapp.post('/linebotwebhook', middleware(lineConfig), async (req, res) => {
 });
 
 const handleEvent = (event) => {
-   
+
     switch (event.type) {
         case 'join': //這隻機器人加入別人的群組
             break;
@@ -99,7 +99,30 @@ const handleEvent = (event) => {
         case 'message': //傳訊息給機器人
             switch (event.message.type) {
                 case 'text':
-                    textHandler(event.replyToken, event.message.text);   //測試code就不用這行
+                    // textHandler(event.replyToken, event.message.text);   //測試code就不用這行
+                    try {
+                        let resText;
+                        switch (event.message.text) {
+                            case '/uuid':
+                                resText = `uuid is:${event.source.userId}`;
+                                break;
+                            case 'test':
+                                resText = `測試`;
+                                break
+                            //             case 'Q&A':
+                            //                 return client.replyMessage(replyToken, imageMap());
+                            //             case 'q&a':
+                            //                 return client.replyMessage(replyToken, carousel());
+                            default:
+                                resText = '請親臨院所';
+                        }
+                        return client.replyMessage(event.replyToken, {
+                            type: 'text',
+                            text: resText
+                        });
+                    } catch (err) {
+                        console.log(err)
+                    }
                     //             return client.replyMessage(replyToken, {     ---->    測試用code通常就是呼叫client.replyMessage，並依api要求格式回傳
                     //                 type: 'text',
                     //                 text: event.message.text  ----> 我們傳給機器人的文字會在這裡面
@@ -144,6 +167,6 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
-lineapp.listen(port+1, () => {
-    console.log(`Line server is running on port ${port+1}`);
+lineapp.listen(port + 1, () => {
+    console.log(`Line server is running on port ${port + 1}`);
 });
