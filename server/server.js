@@ -69,7 +69,7 @@ app.post('/uploadimg', function (req, res) {
     let token = decodeURI(req.body.token)
     //將data轉為png並儲存，檔名為當下時間
     var date = new Date();
-    let filename = `${token}${date.getTime()}.png`
+    let filename = `${token}.png`
     fs.writeFileSync(`./web/img/${filename}`, data, 'base64');
     res.send(encodeURI(filename));
 });
@@ -99,7 +99,6 @@ const handleEvent = (event) => {
         case 'message': //傳訊息給機器人
             switch (event.message.type) {
                 case 'text':
-                    // textHandler(event.replyToken, event.message.text);   //測試code就不用這行
                     try {
                         let resText;
                         switch (event.message.text) {
@@ -109,10 +108,6 @@ const handleEvent = (event) => {
                             case 'test':
                                 resText = `測試`;
                                 break
-                            //             case 'Q&A':
-                            //                 return client.replyMessage(replyToken, imageMap());
-                            //             case 'q&a':
-                            //                 return client.replyMessage(replyToken, carousel());
                             default:
                                 resText = '請親臨院所';
                         }
@@ -123,10 +118,6 @@ const handleEvent = (event) => {
                     } catch (err) {
                         console.log(err)
                     }
-                    //             return client.replyMessage(replyToken, {     ---->    測試用code通常就是呼叫client.replyMessage，並依api要求格式回傳
-                    //                 type: 'text',
-                    //                 text: event.message.text  ----> 我們傳給機器人的文字會在這裡面
-                    //             });
                     break;
                 case 'sticker':
                     // do sth with sticker
@@ -167,6 +158,6 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
-lineapp.listen(port + 1, () => {
+/*lineapp.listen(port + 1, () => {
     console.log(`Line server is running on port ${port + 1}`);
-});
+});*/
