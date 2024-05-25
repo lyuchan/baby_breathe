@@ -9,8 +9,8 @@ const { Client, middleware } = require('@line/bot-sdk');//line bot
 const app = express();
 const lineapp = express();
 var bodyParser = require('body-parser');
-app.use(bodyParser.json({ limit: '5000mb' }));
-app.use(bodyParser.urlencoded({ limit: '5000mb', extended: true }));
+app.use(bodyParser.json({ limit: '500000mb' }));
+app.use(bodyParser.urlencoded({ limit: '500000mb', extended: true }));
 app.use(express.static(__dirname + "/web"));
 // 設定路由處理程序
 
