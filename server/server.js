@@ -78,7 +78,14 @@ connection.connect((err) => {
             res.send('Data error!');
             return;
         }
-        createOrUpdateTable(token, freq, up, new Date());
+        let upb = false;
+        if (up == 'true') {
+            upb = true;
+        } else {
+            upb = false;
+        }
+
+        createOrUpdateTable(token, parseInt(freq), upb, new Date());
         res.send('Data saved successfully!');
     });
 
