@@ -69,17 +69,19 @@ connection.connect((err) => {
     //createOrUpdateTable('asdfghjk', t, y, new Date());
     // 結束 MySQL 連線
     //  connection.end();
-});
-/////////////////////////////////////api功能/////////////////////////////////////
-app.get('/api', (req, res) => {
-    const { token, freq, up } = req.query; // 從查詢參數中獲取 freq 和 up 的值
-    //如果token或freq或up是undefine則返回data error!
-    if (token === undefined || freq === undefined || up === undefined) {
-        res.send('Data error!');
-        return;
-    }
-    createOrUpdateTable(token, freq, up, new Date());
-    res.send('Data saved successfully!');
+
+    /////////////////////////////////////api功能/////////////////////////////////////
+    app.get('/api', (req, res) => {
+        const { token, freq, up } = req.query; // 從查詢參數中獲取 freq 和 up 的值
+        //如果token或freq或up是undefine則返回data error!
+        if (token === undefined || freq === undefined || up === undefined) {
+            res.send('Data error!');
+            return;
+        }
+        createOrUpdateTable(token, freq, up, new Date());
+        res.send('Data saved successfully!');
+    });
+
 });
 
 /////////////////////////////////////接收圖片/////////////////////////////////////
