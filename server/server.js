@@ -3,12 +3,10 @@ require('dotenv').config();//環境變數
 const fs = require('fs');//系統文件
 const path = require('path');//目錄
 const express = require('express');//網頁
-const { Client, middleware } = require('@line/bot-sdk');//line bot
 const mysql = require('mysql');
 /////////////////////////////////////變數區/////////////////////////////////////
 // 創建 Express 應用程式
 const app = express();
-const lineapp = express();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json({ limit: '500000mb' }));
 app.use(bodyParser.urlencoded({ limit: '500000mb', extended: true }));
@@ -108,135 +106,8 @@ app.post('/uploadimg', function (req, res) {
     fs.writeFileSync(`./web/img/${filename}`, data, 'base64');
     res.send(encodeURI(filename));
 });
-/////////////////////////////////////linebot功能/////////////////////////////////////
-const lineConfig = {
-    channelAccessToken: process.env["CHANNEL_ACCESS_TOKEN"],
-    channelSecret: process.env["CHANNEL_SECRET"]
-};
-const client = new Client(lineConfig);
-lineapp.post('/linebotwebhook', middleware(lineConfig), async (req, res) => {
-    try {
-        let result = await req.body.events.map(handleEvent);
-        res.json(result);
-    }
-    catch (err) {
-        console.log(err);
-    }
-});
-
-const handleEvent = (event) => {
-
-    switch (event.type) {
-        case 'join': //這隻機器人加入別人的群組
-            break;
-        case 'follow': //追蹤這隻機器人
-            break;
-        case 'message': //傳訊息給機器人
-            switch (event.message.type) {
-                case 'text':
-                    try {
-                        switch (event.message.text) {
-                            case '/uuid':
-                                replytext(event.replyToken, `uuid is:${event.source.userId}`)
-                                break;
-                            case '綁定感測器':
-                                replytext(event.replyToken, `綁定`)
-                                break
-                            default:
-                                client.replyMessage(event.replyToken,
-                                    {
-                                        "type": "flex",
-                                        "altText": "carousel flex",
-                                        "contents": {
-                                            "type": "bubble",
-                                            "body": {
-                                                "type": "box",
-                                                "layout": "vertical",
-                                                "contents": [
-                                                    {
-                                                        "type": "separator",
-                                                        "color": "#000000"
-                                                    },
-                                                    {
-                                                        "type": "text",
-                                                        "text": "我並未理解您的訊息",
-                                                        "size": "25px",
-                                                        "align": "center",
-                                                        "weight": "bold",
-                                                        "margin": "15px"
-                                                    },
-                                                    {
-                                                        "type": "separator",
-                                                        "color": "#000000",
-                                                        "margin": "15px"
-                                                    },
-                                                    {
-                                                        "type": "text",
-                                                        "text": "我有以下功能",
-                                                        "size": "20px",
-                                                        "margin": "15px",
-                                                        "weight": "bold",
-                                                        "align": "center"
-                                                    },
-                                                    {
-                                                        "type": "button",
-                                                        "action": {
-                                                            "type": "message",
-                                                            "label": "action",
-                                                            "text": "hello"
-                                                        },
-                                                        "margin": "15px",
-                                                        "style": "secondary",
-                                                        "height": "sm"
-                                                    },
-                                                    {
-                                                        "type": "button",
-                                                        "action": {
-                                                            "type": "message",
-                                                            "label": "action",
-                                                            "text": "hello1"
-                                                        },
-                                                        "style": "secondary",
-                                                        "height": "sm",
-                                                        "margin": "10px"
-                                                    },
-                                                    {
-                                                        "type": "separator",
-                                                        "color": "#000000",
-                                                        "margin": "15px"
-                                                    }
-                                                ]
-                                            }
-                                        }
-                                    }
-                                )
-                        }
-                        return;
-                    } catch (err) {
-                        console.log(err)
-                    }
-                    break;
-                case 'sticker':
-                    // do sth with sticker
-                    return
-            }
-    }
-}
-
-function replytext(event, text) {
-    client.replyMessage(event.replyToken, {
-        type: 'text',
-        text: text
-    });
-}
-function replyflex(event, flex) {
-    client.replyMessage(event.replyToken, flex);
-}
 /////////////////////////////////////啟動伺服器/////////////////////////////////////
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
-});
-lineapp.listen(port + 1, () => {
-    console.log(`Line server is running on port ${port + 1}`);
 });
