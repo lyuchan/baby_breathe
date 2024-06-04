@@ -135,16 +135,14 @@ const handleEvent = (event) => {
             switch (event.message.type) {
                 case 'text':
                     try {
-                        let resText;
                         switch (event.message.text) {
                             case '/uuid':
                                 replytext(event.replyToken, `uuid is:${event.source.userId}`)
                                 break;
                             case '綁定感測器':
-                                resText = `測試`;
+                                replytext(event.replyToken, `綁定`)
                                 break
                             default:
-                                resText = '我不太清楚你再說什麼';
                                 replyflex(event.replyToken, "我並未理解您的訊息", {
                                     "type": "bubble",
                                     "body": {
@@ -208,10 +206,7 @@ const handleEvent = (event) => {
                                     }
                                 })
                         }
-                        return client.replyMessage(event.replyToken, {
-                            type: 'text',
-                            text: resText
-                        });
+                        return;
                     } catch (err) {
                         console.log(err)
                     }
