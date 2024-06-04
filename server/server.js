@@ -138,13 +138,75 @@ const handleEvent = (event) => {
                         let resText;
                         switch (event.message.text) {
                             case '/uuid':
-                                resText = `uuid is:${event.source.userId}`;
+                                replytext(event.replyToken, `uuid is:${event.source.userId}`)
                                 break;
-                            case 'test':
+                            case '綁定感測器':
                                 resText = `測試`;
                                 break
                             default:
                                 resText = '我不太清楚你再說什麼';
+                                replyflex(event.replyToken, "我並未理解您的訊息", {
+                                    "type": "bubble",
+                                    "body": {
+                                        "type": "box",
+                                        "layout": "vertical",
+                                        "contents": [
+                                            {
+                                                "type": "separator",
+                                                "color": "#000000",
+                                                "margin": "15px"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "我並未理解您的訊息",
+                                                "size": "25px",
+                                                "align": "center",
+                                                "weight": "bold",
+                                                "margin": "15px"
+                                            },
+                                            {
+                                                "type": "separator",
+                                                "color": "#000000",
+                                                "margin": "15px"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "我有以下功能",
+                                                "size": "20px",
+                                                "margin": "15px",
+                                                "weight": "bold",
+                                                "align": "center"
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "message",
+                                                    "label": "action",
+                                                    "text": "hello"
+                                                },
+                                                "margin": "15px",
+                                                "style": "secondary",
+                                                "height": "sm"
+                                            },
+                                            {
+                                                "type": "button",
+                                                "action": {
+                                                    "type": "message",
+                                                    "label": "action",
+                                                    "text": "hello1"
+                                                },
+                                                "style": "secondary",
+                                                "height": "sm",
+                                                "margin": "10px"
+                                            },
+                                            {
+                                                "type": "separator",
+                                                "color": "#000000",
+                                                "margin": "15px"
+                                            }
+                                        ]
+                                    }
+                                })
                         }
                         return client.replyMessage(event.replyToken, {
                             type: 'text',
@@ -161,7 +223,19 @@ const handleEvent = (event) => {
     }
 }
 
-
+function replytext(event, text) {
+    client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: text
+    });
+}
+function replyflex(event, flexname, flex) {
+    client.replyMessage(event.replyToken, {
+        type: 'flex',
+        altText: flexname,
+        contents: flex
+    });
+}
 /////////////////////////////////////啟動伺服器/////////////////////////////////////
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
