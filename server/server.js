@@ -145,63 +145,190 @@ const handleEvent = (event) => {
                             default:
                                 client.replyMessage(event.replyToken,
                                     {
-                                        "type": "bubble",
-                                        "body": {
-                                            "type": "box",
-                                            "layout": "vertical",
+                                        "type": "flex",
+                                        "altText": "carousel flex",
+                                        "contents": {
+                                            "type": "carousel",
                                             "contents": [
                                                 {
-                                                    "type": "separator",
-                                                    "color": "#000000",
-                                                    "margin": "15px"
-                                                },
-                                                {
-                                                    "type": "text",
-                                                    "text": "我並未理解您的訊息",
-                                                    "size": "25px",
-                                                    "align": "center",
-                                                    "weight": "bold",
-                                                    "margin": "15px"
-                                                },
-                                                {
-                                                    "type": "separator",
-                                                    "color": "#000000",
-                                                    "margin": "15px"
-                                                },
-                                                {
-                                                    "type": "text",
-                                                    "text": "我有以下功能",
-                                                    "size": "20px",
-                                                    "margin": "15px",
-                                                    "weight": "bold",
-                                                    "align": "center"
-                                                },
-                                                {
-                                                    "type": "button",
-                                                    "action": {
-                                                        "type": "message",
-                                                        "label": "action",
-                                                        "text": "hello"
+                                                    "type": "bubble",
+                                                    "size": "kilo",
+                                                    "hero": {
+                                                        "type": "image",
+                                                        "size": "full",
+                                                        "aspectRatio": "10:8",
+                                                        "aspectMode": "cover",
+                                                        "url": "https://i.imgur.com/eee.jpg"
                                                     },
-                                                    "margin": "15px",
-                                                    "style": "secondary",
-                                                    "height": "sm"
+                                                    "body": {
+                                                        "type": "box",
+                                                        "layout": "vertical",
+                                                        "spacing": "sm",
+                                                        "contents": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "門診常見問題",
+                                                                "wrap": true,
+                                                                "weight": "bold",
+                                                                "size": "xl"
+                                                            },
+                                                            {
+                                                                "type": "box",
+                                                                "layout": "baseline",
+                                                                "contents": [
+                                                                    {
+                                                                        "type": "text",
+                                                                        "text": "認識更多",
+                                                                        "wrap": true,
+                                                                        "weight": "regular",
+                                                                        "size": "sm",
+                                                                        "flex": 0,
+                                                                        "color": "#398CCD",
+                                                                        "action": {
+                                                                            "type": "uri",
+                                                                            "label": "action",
+                                                                            "uri": "http://okkp.com/LineHome/qa.html#1"
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
                                                 },
                                                 {
-                                                    "type": "button",
-                                                    "action": {
-                                                        "type": "message",
-                                                        "label": "action",
-                                                        "text": "hello1"
+                                                    "type": "bubble",
+                                                    "size": "kilo",
+                                                    "hero": {
+                                                        "type": "image",
+                                                        "size": "full",
+                                                        "aspectRatio": "10:8",
+                                                        "aspectMode": "cover",
+                                                        "url": "https://imgur.com/zwewedFO.jpg"
                                                     },
-                                                    "style": "secondary",
-                                                    "height": "sm",
-                                                    "margin": "10px"
+                                                    "body": {
+                                                        "type": "box",
+                                                        "layout": "vertical",
+                                                        "spacing": "sm",
+                                                        "contents": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "產前優生保健",
+                                                                "wrap": true,
+                                                                "weight": "bold",
+                                                                "size": "xl"
+                                                            },
+                                                            {
+                                                                "type": "box",
+                                                                "layout": "baseline",
+                                                                "contents": [
+                                                                    {
+                                                                        "type": "text",
+                                                                        "text": "認識更多",
+                                                                        "wrap": true,
+                                                                        "weight": "regular",
+                                                                        "size": "sm",
+                                                                        "flex": 0,
+                                                                        "color": "#398CCD",
+                                                                        "action": {
+                                                                            "type": "uri",
+                                                                            "label": "action",
+                                                                            "uri": "http://okkp.com/LineHome/qa.html#2"
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
                                                 },
                                                 {
-                                                    "type": "separator",
-                                                    "color": "#000000",
-                                                    "margin": "15px"
+                                                    "type": "bubble",
+                                                    "size": "kilo",
+                                                    "hero": {
+                                                        "type": "image",
+                                                        "size": "full",
+                                                        "aspectRatio": "10:8",
+                                                        "aspectMode": "cover",
+                                                        "url": "https://imgur.com/www.jpg"
+                                                    },
+                                                    "body": {
+                                                        "type": "box",
+                                                        "layout": "vertical",
+                                                        "spacing": "sm",
+                                                        "contents": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "基因晶片",
+                                                                "wrap": true,
+                                                                "weight": "bold",
+                                                                "size": "xl"
+                                                            },
+                                                            {
+                                                                "type": "box",
+                                                                "layout": "baseline",
+                                                                "contents": [
+                                                                    {
+                                                                        "type": "text",
+                                                                        "text": "認識更多",
+                                                                        "wrap": true,
+                                                                        "weight": "regular",
+                                                                        "size": "sm",
+                                                                        "flex": 0,
+                                                                        "color": "#398CCD",
+                                                                        "action": {
+                                                                            "type": "uri",
+                                                                            "label": "action",
+                                                                            "uri": "http://okkp.com/LineHome/qa.html#3"
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                {
+                                                    "type": "bubble",
+                                                    "size": "kilo",
+                                                    "hero": {
+                                                        "type": "image",
+                                                        "size": "full",
+                                                        "aspectRatio": "10:8",
+                                                        "aspectMode": "cover",
+                                                        "url": "https://imgur.com/www.jpg"
+                                                    },
+                                                    "body": {
+                                                        "type": "box",
+                                                        "layout": "vertical",
+                                                        "spacing": "sm",
+                                                        "contents": [
+                                                            {
+                                                                "type": "text",
+                                                                "text": "非侵入性染色體檢查",
+                                                                "wrap": true,
+                                                                "weight": "bold",
+                                                                "size": "xl"
+                                                            },
+                                                            {
+                                                                "type": "box",
+                                                                "layout": "baseline",
+                                                                "contents": [
+                                                                    {
+                                                                        "type": "text",
+                                                                        "text": "認識更多",
+                                                                        "wrap": true,
+                                                                        "weight": "regular",
+                                                                        "size": "sm",
+                                                                        "flex": 0,
+                                                                        "color": "#398CCD",
+                                                                        "action": {
+                                                                            "type": "uri",
+                                                                            "label": "action",
+                                                                            "uri": "http://okkp.com/LineHome/qa.html#4"
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
                                                 }
                                             ]
                                         }
