@@ -143,10 +143,9 @@ const handleEvent = (event) => {
                                 replytext(event.replyToken, `綁定`)
                                 break
                             default:
-                                replyflex(event.replyToken,
+                                client.replyMessage(event.replyToken,
                                     {
                                         "type": "bubble",
-                                        "altText": "我並未理解您的訊息",
                                         "body": {
                                             "type": "box",
                                             "layout": "vertical",
