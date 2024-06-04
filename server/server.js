@@ -100,6 +100,10 @@ app.post('/uploadimg', function (req, res) {
         res.send('data error!');
         return;
     }
+    const dir = './web/img/';
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
     let filename = `${token}.png`
     fs.writeFileSync(`./web/img/${filename}`, data, 'base64');
     res.send(encodeURI(filename));
