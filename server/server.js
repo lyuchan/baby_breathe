@@ -93,7 +93,8 @@ connection.connect((err) => {
             res.send('Data error!');
             return;
         }
-        connection.query(`SELECT * FROM ${token} LIMIT 2`, values, (err, result) => {
+        const insertDataSQL = `SELECT * FROM ${token} LIMIT 2;`;
+        connection.query(insertDataSQL, values, (err, result) => {
             if (err) {
                 console.error('err:', err);
                 return;
