@@ -44,5 +44,5 @@ url = 'https://baby.lyuchan.com/uploadimg'
 data = {'img': base64_data,'token':'hi'}
 response = requests.post(url, data=data)
 ```
-## 硬體進度
-- 處理wifi
+## autopull
+自動更新
