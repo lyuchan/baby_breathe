@@ -99,11 +99,11 @@ connection.connect((err) => {
                 console.error('err:', err);
                 return;
             }
-           // console.log(`data is:${result}`);
-           let data=[]
-           for (let i=0;i<result.length;i++){
-            data.push(result[i])
-           }
+            // console.log(`data is:${result}`);
+            let data = []
+            for (let i = 0; i < result.length; i++) {
+                data.push(result[result.length - i])
+            }
             res.send(data)
         });
     });
