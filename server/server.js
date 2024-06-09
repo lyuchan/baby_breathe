@@ -86,6 +86,21 @@ connection.connect((err) => {
         createOrUpdateTable(token, parseInt(freq), upb, new Date());
         res.send('Data saved successfully!');
     });
+    app.get('/getapi', (req, res) => {
+        const { token } = req.query; // 從查詢參數中獲取 freq 和 up 的值
+        //如果token或freq或up是undefine則返回data error!
+        if (token === undefined) {
+            res.send('Data error!');
+            return;
+        }
+        connection.query(`SELECT * FROM ${token} LIMIT 2`, values, (err, result) => {
+            if (err) {
+                console.error('err:', err);
+                return;
+            }
+            console.log(`data is:${result}`);
+        });
+    });
 
 });
 
