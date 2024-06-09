@@ -100,6 +100,7 @@ connection.connect((err) => {
                 return;
             }
             console.log(`data is:${result}`);
+            res.send(result)
         });
     });
 
