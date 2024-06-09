@@ -102,7 +102,7 @@ connection.connect((err) => {
             // console.log(`data is:${result}`);
             let data = []
             for (let i = 0; i < result.length; i++) {
-                data.push(result[result.length - i + 1])
+                data.push(result[result.length - i - 1])
             }
             res.send(data)
         });
