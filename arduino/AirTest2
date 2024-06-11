@@ -1,0 +1,59 @@
+// 引腳定義
+const int xPin = A1;             // GY-61 X軸輸出連接到Arduino A1引腳
+const int yPin = A2;             // GY-61 Y軸輸出連接到Arduino A2引腳
+const int zPin = A3;             // GY-61 Z軸輸出連接到Arduino A3引腳
+
+int previousDifference = 0;      // 上一次起伏值
+int breathCount = 0;             // 呼吸變化的次數
+int minuteBreathCount = 0;       // 一分鐘內呼吸變化的次數
+unsigned long previousMillis = 0;// 上一次計算呼吸變化次數的時間
+const long interval = 60000;     // 計算呼吸變化次數的時間間隔（毫秒），設置為一分鐘
+
+bool previousTurnedOver = false; // 上一次翻身狀態
+bool turnedOver = false;         // 當前翻身狀態
+
+void setup() {
+  Serial.begin(9600);            // 初始化串口通信，波特率為9600
+}
+
+void loop() {
+  unsigned long currentMillis = millis(); // 獲取當前時間的毫秒數
+  int x = analogRead(xPin);                // 讀取X軸電壓值
+  int y = analogRead(yPin);                // 讀取Y軸電壓值
+  int z = analogRead(zPin);                // 讀取Z軸電壓值
+  
+  int difference = abs(x - y);             // 計算X、Y軸的差值（起伏）
+  
+  if (difference != previousDifference) {  // 檢查起伏是否有變化
+    previousDifference = difference;       // 更新上一次起伏值
+    breathCount++;                         // 記錄呼吸變化的次數
+  }
+  
+  // 假設Z軸的值大於某個閾值表示翻身
+  turnedOver = (z < 350 || z < 270); 
+  
+  if (currentMillis - previousMillis >= interval) { // 檢查是否達到計算呼吸變化次數的時間間隔
+    previousMillis = currentMillis;        // 更新上一次計算時間的值
+    minuteBreathCount = breathCount;       // 更新一分鐘內呼吸變化的次數
+    breathCount = 0;                       // 重置呼吸變化的次數
+    
+    // 輸出呼吸頻率到串口監視器
+    Serial.print("呼吸頻率: ");
+    Serial.println(minuteBreathCount);
+    //Serial.println(z);            //翻身
+    //Serial.println(difference);   //呼吸
+    
+    if (minuteBreathCount < 45) {    // 呼吸頻率未達標
+      Serial.println("呼吸異常");
+    }
+    if (difference < 60) {           // 無呼吸
+      Serial.println("呼吸異常");
+    }
+
+    // 輸出翻身狀態到串口監視器
+    Serial.print("翻身: ");
+    Serial.println(turnedOver ? "是" : "否");
+  }
+
+  delay(500); // 延遲以穩定串口輸出
+}
