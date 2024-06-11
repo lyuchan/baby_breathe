@@ -5,7 +5,7 @@ int previousDifference = 0;    // 上一個起伏值
 int breathCount = 0;            // 呼吸改變的次數
 int minuteBreathCount = 0;      // 一分鐘內呼吸改變的次數
 unsigned long previousMillis = 0;  // 上一次計算呼吸改變次數的時間
-const long interval = 1000;   // 計算呼吸改變次數的時間間隔（毫秒）
+const long interval = 60000;   // 計算呼吸改變次數的時間間隔（毫秒）
 
 void setup()
 {
@@ -31,7 +31,7 @@ void loop()
    
    Serial.print("呼吸頻率: "); // 呼吸頻率
    Serial.println(minuteBreathCount);   
-   if (minuteBreathCount < 1) {  //呼吸頻率未達標
+   if (minuteBreathCount < 40) {  //呼吸頻率未達標
      Serial.println("呼吸異常");
    }
    minuteBreathCount = 0; // 重置一分鐘內呼吸改變的次數
