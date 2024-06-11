@@ -49,11 +49,10 @@ void loop() {
     if (difference < 60) {           // 無呼吸
       Serial.println("呼吸異常");
     }
-
-    // 輸出翻身狀態到串口監視器
-    Serial.print("翻身: ");
-    Serial.println(turnedOver ? "是" : "否");
   }
+  // 輸出翻身狀態到串口監視器
+  Serial.print("翻身: ");
+  Serial.println(turnedOver ? "是" : "否");
 
-  delay(500); // 延遲以穩定串口輸出
+  delay(1000); // 延遲以穩定串口輸出
 }
