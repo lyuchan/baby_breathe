@@ -1,0 +1,50 @@
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
+#include <WiFiManager.h>
+
+void setup() {
+  Serial.begin(9600);
+  WiFiManager wifiManager;
+  wifiManager.autoConnect("ESP8266_BabyMonitor");
+
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("無法連接WiFi");
+    ESP.restart();
+  }
+}
+
+void loop() {
+  if (Serial.available() > 0) {
+    String data = Serial.readStringUntil('\n');
+    data.trim();  // 去除前後的空白字符
+    int delimiterIndex = data.indexOf(',');
+    
+    if (delimiterIndex != -1) {
+      String freqString = data.substring(0, delimiterIndex);
+      String upString = data.substring(delimiterIndex + 1);
+      
+      int freq = freqString.toInt();
+      bool up = (upString == "1");
+
+      if (WiFi.status() == WL_CONNECTED) {
+        HTTPClient http;
+        String serverPath = "https://baby.lyuchan.com/api/?freq=" + String(freq) + "&up=data2" + String(up) + "&token=data3";
+
+        WiFiClient client;
+        http.begin(client, serverPath);
+        int httpResponseCode = http.GET();
+
+        if (httpResponseCode > 0) {
+          Serial.print("HTTP 回應碼: ");
+          Serial.println(httpResponseCode);
+        } else {
+          Serial.print("HTTP 請求失敗, 錯誤: ");
+          Serial.println(http.errorToString(httpResponseCode).c_str());
+        }
+        http.end();
+      } else {
+        Serial.println("WiFi 未連接");
+      }
+    }
+  }
+}
