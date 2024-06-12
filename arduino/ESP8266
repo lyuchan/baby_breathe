@@ -3,11 +3,13 @@
 #include <WiFiManager.h>
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
+  Serial.println();
+  Serial.println("ESP8266啟動");
   WiFiManager wifiManager;
-  wifiManager.autoConnect("ESP8266_BabyMonitor");
+  wifiManager.autoConnect("ESP_Baby");
 
-  if (WiFi.status() != WL_CONNECTED) {
+  if (!wifiManager.autoConnect("ESP_Baby")) {
     Serial.println("無法連接WiFi");
     ESP.restart();
   }
@@ -48,3 +50,4 @@ void loop() {
     }
   }
 }
+
