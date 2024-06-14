@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>綁定裝置</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+</head>
+<style>
+    body {
+        display: flex;
+        background-color: #111111;
+        justify-content: center;
+    }
+
+    h1 {
+        color: #fff;
+        text-align: center;
+        font-size: 5vw;
+    }
+
+    h2 {
+        color: #fff;
+        text-align: center;
+        font-size: 5vw;
+        letter-spacing: 1vw;
+    }
+
+    .border {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 90%;
+        padding: 10px;
+        background: #222222;
+        color: #fff;
+        border-radius: 10px;
+
+    }
+
+    .border2 {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 90%;
+        padding: 10px;
+        background: #0c0c0c;
+        color: #fff;
+        border-radius: 10px;
+
+    }
+
+    .btn {
+        background-color: #1A3140;
+        color: #FFFFFF;
+        font-size: 20px;
+        padding: 10px 50px;
+        border-radius: 10px;
+        cursor: pointer;
+        border: 0;
+    }
+
+    .su {
+        background-color: #028a6a;
+    }
+
+    .er {
+        background-color: #d84e46;
+    }
+</style>
+
+<body>
+    <div class="border">
+        <h1>請確認該裝置背面序號是否符合</h1>
+        <div class="border2">
+            <h2>asdfghjklkjhgfdsa</h2>
+        </div>
+        <div>
+            <p></p>
+            <div style="display: flex;justify-content: center;">
+                <button class="btn su">序號正確</button>
+                <p style="color: #222222;">被你<br>發現了</p>
+                <button class="btn er">序號錯誤</button>
+            </div>
+        </div>
+    </div>
+    <h2 id="userid"></h2>
+    <h2 id="id_token"></h2>
+    <h2 id="charger_id"></h2>
+
+    <script>
+        var params = new URLSearchParams(new URL(window.location.href).search);
+        let charger_id = params.get('charger_id');
+        var userId = '';
+        var result = {};
+        window.onload = function (e) {
+            initializeLiff('2005553288-GWg7kzgQ');
+        };
+
+        function initializeLiff(myLiffId) {
+            liff
+                .init({
+                    liffId: myLiffId
+                })
+                .then(() => {
+                    // start to use LIFF's api
+                    initializeApp();
+                })
+                .catch((err) => {
+                    //document.getElementById("liffAppContent").classList.add('hidden');
+                    //document.getElementById("liffInitErrorMessage").classList.remove('hidden');
+                });
+        }
+
+        /* function initializeApp(data) {
+             if (liff.isLoggedIn()) {
+                 liff.getProfile().then(function (profile) {
+                     userId = profile.userId;
+                     document.getElementById('userid').innerHTML = `userid is:${profile.userId}`;
+                     document.getElementById('id_token').innerHTML = `token is:${liff.getIDToken()}`;
+                     document.getElementById('charger_id').innerHTML = `charger_id is:${charger_id}`;
+                     jQuery.ajax({
+                         method: "POST",
+                         url: "https://03fd-123-51-159-64.ngrok-free.app/getstart",
+                         dataType: "json",
+                         data: `id_token=${liff.getIDToken()}&user_id=${userId}&charger_id=${charger_id}&station_id=7`
+                     }).done(function (feedback) {
+                         alert(feedback.msg);
+                     })
+                 }).catch(function (error) {
+                     //window.alert("Error getting profile: " + error);
+                     //document.getElementById('charger_id').textContent = '查詢失敗，網路環境異常，請稍後再試';
+                 });
+             } else {
+                 liff.login({ redirectUri: 'https://liff.line.me/2005553288-GWg7kzgQ' });
+             }
+         }
+ 
+         jQuery(document).ready(function () {
+ 
+ 
+         });
+ 
+ */
+    </script>
+</body>
+
+</html>
