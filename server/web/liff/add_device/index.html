@@ -98,7 +98,7 @@
 
         var params = new URLSearchParams(new URL(window.location.href).search);
         let device_id = params.get('device_id');
-        
+
         var userId = '';
         var result = {};
         window.onload = function (e) {
@@ -146,6 +146,44 @@
                 liff.login({ redirectUri: 'https://liff.line.me/2005553288-GWg7kzgQ' });
             }
         }
+        document.getElementById("device_id_success").addEventListener("click", () => {
+            jQuery.ajax({
+                method: "POST",
+                url: "https://db.lyuchan.com/add_device",
+                dataType: "json",
+                data: `uuid=${userId}&device=${device_id}`,
+                headers: { 'Content-Type': 'application/json' },
+
+            }).done(function (feedback) {
+                liff.sendMessages([
+                    {
+                        type: 'text',
+                        text: '綁定裝置'
+                    }
+                ]).then(function (res) {
+                    console.log(res)
+                })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                liff.closeWindow();
+            })
+        });
+        document.getElementById("device_id_error").addEventListener("click", () => {
+            liff.sendMessages([
+                {
+                    type: 'text',
+                    text: '取消綁定'
+                }
+            ]).then(function (res) {
+                console.log(res)
+            })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            liff.closeWindow();
+
+        });
 
         jQuery(document).ready(function () {
 
