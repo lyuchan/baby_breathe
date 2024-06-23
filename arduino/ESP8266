@@ -30,7 +30,7 @@ void loop() {
 
       if (WiFi.status() == WL_CONNECTED) {
         HTTPClient http;
-        String serverPath = "https://baby.lyuchan.com/api/?freq=" + String(freq) + "&up=data2" + String(up) + "&token=data3";
+        String serverPath = "https://db.lyuchan.com/api/?freq=" + String(freq) + "&up=data2" + String(up) + "&token=data3";
 
         WiFiClient client;
         http.begin(client, serverPath);
