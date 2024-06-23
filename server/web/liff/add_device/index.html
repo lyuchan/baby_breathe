@@ -98,7 +98,7 @@
 
         var params = new URLSearchParams(new URL(window.location.href).search);
         let device_id = params.get('device_id');
-        document.getElementById('device_id').innerHTML = `${device_id}`;
+        
         var userId = '';
         var result = {};
         window.onload = function (e) {
@@ -124,6 +124,9 @@
             if (liff.isLoggedIn()) {
                 liff.getProfile().then(function (profile) {
                     userId = profile.userId;
+                    document.getElementById('device_id_success').style = "display: block;";
+                    document.getElementById('device_id_error').style = "display: block;";
+                    document.getElementById('device_id').innerHTML = `${device_id}`;
                     //document.getElementById('userid').innerHTML = `userid is:${profile.userId}`;
                     // document.getElementById('id_token').innerHTML = `token is:${liff.getIDToken()}`;
 
