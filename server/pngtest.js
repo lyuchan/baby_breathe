@@ -3,6 +3,7 @@ test()
 async function test ()  {
     const browser = await puppeteer.launch({
         headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--font-render-hinting=none'],
         defaultViewport: null,
         executablePath: '/usr/bin/chromium-browser'
     });
