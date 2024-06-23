@@ -79,7 +79,7 @@
     <div class="border">
         <h1>請確認該裝置背面序號是否符合</h1>
         <div class="border2">
-            <h2>asdfghjklkjhgfdsa</h2>
+            <h2 id="device_id">asdfghjklkjhgfdsa</h2>
         </div>
         <div>
             <p></p>
@@ -92,11 +92,11 @@
     </div>
     <h2 id="userid"></h2>
     <h2 id="id_token"></h2>
-    <h2 id="charger_id"></h2>
+
 
     <script>
         var params = new URLSearchParams(new URL(window.location.href).search);
-        let charger_id = params.get('charger_id');
+        let device_id = params.get('device_id');
         var userId = '';
         var result = {};
         window.onload = function (e) {
@@ -118,36 +118,36 @@
                 });
         }
 
-        /* function initializeApp(data) {
-             if (liff.isLoggedIn()) {
-                 liff.getProfile().then(function (profile) {
-                     userId = profile.userId;
-                     document.getElementById('userid').innerHTML = `userid is:${profile.userId}`;
-                     document.getElementById('id_token').innerHTML = `token is:${liff.getIDToken()}`;
-                     document.getElementById('charger_id').innerHTML = `charger_id is:${charger_id}`;
-                     jQuery.ajax({
-                         method: "POST",
-                         url: "https://03fd-123-51-159-64.ngrok-free.app/getstart",
-                         dataType: "json",
-                         data: `id_token=${liff.getIDToken()}&user_id=${userId}&charger_id=${charger_id}&station_id=7`
-                     }).done(function (feedback) {
-                         alert(feedback.msg);
-                     })
-                 }).catch(function (error) {
-                     //window.alert("Error getting profile: " + error);
-                     //document.getElementById('charger_id').textContent = '查詢失敗，網路環境異常，請稍後再試';
-                 });
-             } else {
-                 liff.login({ redirectUri: 'https://liff.line.me/2005553288-GWg7kzgQ' });
-             }
-         }
- 
-         jQuery(document).ready(function () {
- 
- 
-         });
- 
- */
+        function initializeApp(data) {
+            if (liff.isLoggedIn()) {
+                liff.getProfile().then(function (profile) {
+                    userId = profile.userId;
+                    document.getElementById('userid').innerHTML = `userid is:${profile.userId}`;
+                    document.getElementById('id_token').innerHTML = `token is:${liff.getIDToken()}`;
+                    document.getElementById('device_id').innerHTML = `${device_id}`;
+                    /*jQuery.ajax({
+                        method: "POST",
+                        url: "https://03fd-123-51-159-64.ngrok-free.app/getstart",
+                        dataType: "json",
+                        data: `id_token=${liff.getIDToken()}&user_id=${userId}&charger_id=${charger_id}&station_id=7`
+                    }).done(function (feedback) {
+                        alert(feedback.msg);
+                    })*/
+                }).catch(function (error) {
+                    //window.alert("Error getting profile: " + error);
+                    //document.getElementById('charger_id').textContent = '查詢失敗，網路環境異常，請稍後再試';
+                });
+            } else {
+                liff.login({ redirectUri: 'https://liff.line.me/2005553288-GWg7kzgQ' });
+            }
+        }
+
+        jQuery(document).ready(function () {
+
+
+        });
+
+
     </script>
 </body>
 
