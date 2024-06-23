@@ -124,9 +124,9 @@ connection.connect((err) => {
     })
 
     app.post('/del_device', function (req, res) {
-        let { uuid, device } = req.body;
-        const query = 'INSERT INTO linebot_device (uuid,device) VALUES ( ?, ?)';
-        connection.query(query, [uuid, device], (err, result) => {
+        let { device } = req.body;
+        const query = `DELETE FROM linebot_device WHERE linebot_device.device = '${device}'`
+        connection.query(query, (err, result) => {
             if (err) {
                 if (err.code === 'ER_DUP_ENTRY') {
                     res.json({ error: 'username_used' });
@@ -138,7 +138,7 @@ connection.connect((err) => {
             res.json({ success: true });
         });
     })
-    
+
 
 });
 
