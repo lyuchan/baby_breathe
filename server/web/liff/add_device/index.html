@@ -122,8 +122,8 @@
             if (liff.isLoggedIn()) {
                 liff.getProfile().then(function (profile) {
                     userId = profile.userId;
-                    document.getElementById('userid').innerHTML = `userid is:${profile.userId}`;
-                    document.getElementById('id_token').innerHTML = `token is:${liff.getIDToken()}`;
+                    //document.getElementById('userid').innerHTML = `userid is:${profile.userId}`;
+                   // document.getElementById('id_token').innerHTML = `token is:${liff.getIDToken()}`;
                     document.getElementById('device_id').innerHTML = `${device_id}`;
                     /*jQuery.ajax({
                         method: "POST",
