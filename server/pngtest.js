@@ -4,7 +4,9 @@ async function test ()  {
     const browser = await puppeteer.launch({
         headless: true,
         defaultViewport: null,
+        executablePath: '/usr/bin/chromium-browser'
     });
+      
     const page = await browser.newPage()
     // 设置浏览器视窗
     page.setViewport({
