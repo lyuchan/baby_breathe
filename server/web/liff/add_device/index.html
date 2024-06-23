@@ -10,7 +10,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 </head>
 <style>
     body {
@@ -158,21 +159,12 @@
                 },
                 body: formData.toString()
             }).then(() => {
-                liff.sendMessages([
-                    {
-                        type: 'text',
-                        text: '綁定裝置'
-                    }
-                ]).then(function (res) {
-                    console.log(res)
-                })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-                liff.closeWindow();
+                Swal.fire("已綁定", "", "success").then(() => {
+                    liff.closeWindow();
+                });
             })
                 .catch(error => {
-                    
+
                 })
             /*
             jQuery.ajax({
@@ -201,18 +193,10 @@
         });
         document.getElementById("device_id_error").addEventListener("click", () => {
 
-            liff.sendMessages([
-                {
-                    type: 'text',
-                    text: '取消綁定'
-                }
-            ]).then(function (res) {
-                console.log(res)
-            })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            liff.closeWindow();
+            Swal.fire("已取消綁定", "", "success").then(() => {
+                liff.closeWindow();
+            });
+
 
         });
 
