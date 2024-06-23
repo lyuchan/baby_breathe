@@ -110,6 +110,36 @@ connection.connect((err) => {
 
 });
 
+app.post('/add_device', function (req, res) {
+    let { uuid,device } = req.body;
+    const query = 'INSERT INTO linebot_device (uuid,device) VALUES ( ?, ?)';
+    connection.query(query, [uuid, device], (err, result) => {
+        if (err) {
+            if (err.code === 'ER_DUP_ENTRY') {
+                res.json({ error: 'username_used' });
+            } else {
+                res.status(500).json({ error: err.code });
+            }
+            return;
+        }
+        res.json({ success: true });
+    });
+})
+app.post('/del_device', function (req, res) {
+    let { uuid,device } = req.body;
+    const query = 'INSERT INTO linebot_device (uuid,device) VALUES ( ?, ?)';
+    connection.query(query, [uuid, device], (err, result) => {
+        if (err) {
+            if (err.code === 'ER_DUP_ENTRY') {
+                res.json({ error: 'username_used' });
+            } else {
+                res.status(500).json({ error: err.code });
+            }
+            return;
+        }
+        res.json({ success: true });
+    });
+})
 /////////////////////////////////////接收圖片/////////////////////////////////////
 app.post('/uploadimg', function (req, res) {
 
