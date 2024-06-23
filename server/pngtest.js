@@ -11,12 +11,12 @@ async function test() {
     const page = await browser.newPage()
     // 设置浏览器视窗
     page.setViewport({
-        width: 1920,
-        height: 1080,
+        width: 850,
+        height: 212,
     })
 
     await page.goto('https://db.lyuchan.com/pic');
-    
+
     await page.screenshot({ path: './web/img/baidu.png', fullPage: false });
     await browser.close();
 
