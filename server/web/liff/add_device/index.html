@@ -79,14 +79,14 @@
     <div class="border">
         <h1>請確認該裝置背面序號是否符合</h1>
         <div class="border2">
-            <h2 id="device_id">asdfghjklkjhgfdsa</h2>
+            <h2 id="device_id"></h2>
         </div>
         <div>
             <p></p>
             <div style="display: flex;justify-content: center;">
-                <button class="btn su">序號正確</button>
+                <button id="device_id_success" class="btn su" style="display: none;">序號正確</button>
                 <p style="color: #222222;">被你<br>發現了</p>
-                <button class="btn er">序號錯誤</button>
+                <button id="device_id_error" class="btn er" style="display: none;">序號錯誤</button>
             </div>
         </div>
     </div>
@@ -95,8 +95,10 @@
 
 
     <script>
+
         var params = new URLSearchParams(new URL(window.location.href).search);
         let device_id = params.get('device_id');
+        document.getElementById('device_id').innerHTML = `${device_id}`;
         var userId = '';
         var result = {};
         window.onload = function (e) {
@@ -123,8 +125,8 @@
                 liff.getProfile().then(function (profile) {
                     userId = profile.userId;
                     //document.getElementById('userid').innerHTML = `userid is:${profile.userId}`;
-                   // document.getElementById('id_token').innerHTML = `token is:${liff.getIDToken()}`;
-                    document.getElementById('device_id').innerHTML = `${device_id}`;
+                    // document.getElementById('id_token').innerHTML = `token is:${liff.getIDToken()}`;
+
                     /*jQuery.ajax({
                         method: "POST",
                         url: "https://03fd-123-51-159-64.ngrok-free.app/getstart",
