@@ -147,12 +147,42 @@
             }
         }
         document.getElementById("device_id_success").addEventListener("click", () => {
+            const formData = new URLSearchParams();
+            formData.append('uuid', userId);
+            formData.append('device', device_id);
+
+            fetch('/add_device', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: formData.toString()
+            }).then(() => {
+                liff.sendMessages([
+                    {
+                        type: 'text',
+                        text: '綁定裝置'
+                    }
+                ]).then(function (res) {
+                    console.log(res)
+                })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                liff.closeWindow();
+            })
+                .catch(error => {
+                    
+                })
+            /*
             jQuery.ajax({
                 method: "POST",
                 url: "https://db.lyuchan.com/add_device",
-                dataType: "json",
-                data: `uuid=${userId}&device=${device_id}`,
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+                dataType: 'json',
+                data: data,
+
 
             }).done(function (feedback) {
                 liff.sendMessages([
@@ -167,10 +197,10 @@
                         console.log(error);
                     });
                 liff.closeWindow();
-            })
+            })*/
         });
         document.getElementById("device_id_error").addEventListener("click", () => {
-            
+
             liff.sendMessages([
                 {
                     type: 'text',
