@@ -56,9 +56,9 @@ function handleEvent(event) {
                     {
                         "type": "button",
                         "action": {
-                            "type": "message",
-                            "label": "action",
-                            "text": "hello"
+                            "type": "uri",
+                            "label": "綁定",
+                            "uri": "https://liff.line.me/2005687870-mLLOD7wA?device_id=lyuchan"
                         },
                         "margin": "15px",
                         "style": "secondary",
