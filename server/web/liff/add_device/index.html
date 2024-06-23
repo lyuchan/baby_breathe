@@ -170,17 +170,7 @@
             })
         });
         document.getElementById("device_id_error").addEventListener("click", () => {
-            liff.shareTargetPicker([
-                {
-                    type: "text",
-                    text: "取消綁定"
-                }
-            ])
-                .then(
-                    alert("ShareTargetPicker was launched")
-                ).catch(function (res) {
-                    alert("Failed to launch ShareTargetPicker")
-                })
+            
             liff.sendMessages([
                 {
                     type: 'text',
