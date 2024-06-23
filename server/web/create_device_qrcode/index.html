@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>device_qrcode_產生器</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+</head>
+
+<body style="background-color: black;">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400&display=swap');
+
+        body {
+            font-family: 'Roboto Mono', monospace;
+            margin: 0;
+            background-color: #01131E;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #FFF;
+
+        }
+
+        input {
+            width: 50%;
+            font-size: 80px;
+        }
+
+        p {
+            font-size: 50px;
+            line-height: 0px;
+        }
+    </style>
+    <h1 style="color: white;text-align:center;font-size: 100px;">device_id qrcode 產生器</h1>
+    <div style="display:flex;justify-content: center;">
+        <p>device_id : </p>
+        <p style="color:black;">a</p>
+        <input type="text" name="text" id="uuid" />
+    </div>
+    <h1 style="color: black;">===</h1>
+    <img id="qrcode" src="">
+
+    <script>
+        const input = document.querySelector('input');
+        const qrcode = document.getElementById('qrcode');
+        input.addEventListener('input', showValue);
+        function showValue(e) {
+            if (e.target.value == "") {
+                qrcode.src = ``
+            } else {
+                qrcode.src = `https://db.lyuchan.com/chart?cht=qr&chs=500x500&chl=https://liff.line.me/2005687870-mLLOD7wA?device_id=${e.target.value}`
+            }
+            console.log(e.target.value);
+        }
+    </script>
+
+</body>
+
+</html>
