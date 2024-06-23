@@ -125,6 +125,7 @@ app.post('/add_device', function (req, res) {
         res.json({ success: true });
     });
 })
+
 app.post('/del_device', function (req, res) {
     let { uuid,device } = req.body;
     const query = 'INSERT INTO linebot_device (uuid,device) VALUES ( ?, ?)';
