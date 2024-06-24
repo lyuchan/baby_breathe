@@ -13,19 +13,19 @@ app.use(bodyParser.urlencoded({ limit: '500000mb', extended: true }));
 app.use(express.static(__dirname + "/web"));
 // 設定路由處理程序
 /////////////////////////////////////mysql/////////////////////////////////////
-const datadb = mysql.createdatadb({
+const datadb = mysql.createConnection({
     host: 'localhost',
     user: process.env["user"],
     password: process.env["password"],
     database: 'data' // 資料庫名稱
 });
-/*const userdb = mysql.createdatadb({
+const userdb = mysql.createConnection({
     host: 'localhost',
     user: process.env["user"],
     password: process.env["password"],
     database: 'userdata' // 資料庫名稱
 });
-*/
+
 datadb.connect((err) => {
     if (err) {
         console.error('無法連線到 MySQL：', err);
