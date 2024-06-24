@@ -15,8 +15,8 @@ app.post('/linebotwebhook', line.middleware(config), (req, res) => {
             res.status(500).end();
         });
 });
-app.post('/linepushmsg', (req, res) => {
-    const { text, user_id } = req.body;
+app.get('/linepushmsg', (req, res) => {
+    const { text, user_id } = req.query;
     client.pushMessage({
         to: user_id,
         messages: [{
