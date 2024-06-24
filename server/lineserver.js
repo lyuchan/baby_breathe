@@ -16,12 +16,12 @@ app.post('/linebotwebhook', line.middleware(config), (req, res) => {
         });
 });
 app.post('/linepushmsg', (req, res) => {
-    const { msg, user_id } = req.body;
+    const { text, user_id } = req.body;
     client.pushMessage({
         to: user_id,
         messages: [{
             type: "text",
-            text: msg
+            text: text
         }]
     });
     res.json({ success: true });
