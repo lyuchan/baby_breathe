@@ -3,7 +3,7 @@ require('dotenv').config();//環境變數
 const fs = require('fs');//系統文件
 const path = require('path');//目錄
 const express = require('express');//網頁
-const mysql = require('mysql');
+const mysql = require('mysql');//資料庫
 /////////////////////////////////////變數區/////////////////////////////////////
 // 創建 Express 應用程式
 const app = express();
@@ -13,14 +13,20 @@ app.use(bodyParser.urlencoded({ limit: '500000mb', extended: true }));
 app.use(express.static(__dirname + "/web"));
 // 設定路由處理程序
 /////////////////////////////////////mysql/////////////////////////////////////
-const connection = mysql.createConnection({
+const datadb = mysql.createdatadb({
     host: 'localhost',
     user: process.env["user"],
     password: process.env["password"],
     database: 'data' // 資料庫名稱
 });
+const userdb = mysql.createdatadb({
+    host: 'localhost',
+    user: process.env["user"],
+    password: process.env["password"],
+    database: 'userdata' // 資料庫名稱
+});
 
-connection.connect((err) => {
+datadb.connect((err) => {
     if (err) {
         console.error('無法連線到 MySQL：', err);
         return;
@@ -42,7 +48,7 @@ connection.connect((err) => {
       `;
 
         // 執行 SQL 指令
-        connection.query(createTableSQL, (err) => {
+        datadb.query(createTableSQL, (err) => {
             if (err) {
                 console.error('無法建立資料表：', err);
                 return;
@@ -55,7 +61,7 @@ connection.connect((err) => {
           VALUES (?, ?, ?)
         `;
             const values = [freq, up, date];
-            connection.query(insertDataSQL, values, (err, result) => {
+            datadb.query(insertDataSQL, values, (err, result) => {
                 if (err) {
                     console.error('無法插入資料：', err);
                     return;
@@ -66,7 +72,7 @@ connection.connect((err) => {
     }
     //createOrUpdateTable('asdfghjk', t, y, new Date());
     // 結束 MySQL 連線
-    //  connection.end();
+    //  datadb.end();
 
     /////////////////////////////////////api功能/////////////////////////////////////
     app.get('/api', (req, res) => {
@@ -94,7 +100,7 @@ connection.connect((err) => {
             return;
         }
         const insertDataSQL = `SELECT * FROM ${token} order by id desc limit ${limit};`;
-        connection.query(insertDataSQL, (err, result) => {
+        datadb.query(insertDataSQL, (err, result) => {
             if (err) {
                 console.error('err:', err);
                 return;
@@ -107,10 +113,20 @@ connection.connect((err) => {
             res.send(data)
         });
     });
+
+
+
+});
+userdb.connect((err) => {
+    if (err) {
+        console.error('無法連線到 MySQL：', err);
+        return;
+    }
+    console.log('已成功連線到 MySQL');
     app.post('/add_device', function (req, res) {
         let { uuid, device } = req.body;
         const query = 'INSERT INTO linebot_device (uuid,device) VALUES ( ?, ?)';
-        connection.query(query, [uuid, device], (err, result) => {
+        datadb.query(query, [uuid, device], (err, result) => {
             if (err) {
                 if (err.code === 'ER_DUP_ENTRY') {
                     res.json({ error: 'username_used' });
@@ -126,7 +142,7 @@ connection.connect((err) => {
     app.post('/del_device', function (req, res) {
         let { device } = req.body;
         const query = `DELETE FROM linebot_device WHERE linebot_device.device = '${device}'`
-        connection.query(query, (err, result) => {
+        datadb.query(query, (err, result) => {
             if (err) {
                 if (err.code === 'ER_DUP_ENTRY') {
                     res.json({ error: 'username_used' });
@@ -138,11 +154,7 @@ connection.connect((err) => {
             res.json({ success: true });
         });
     })
-
-
-});
-
-
+})
 /////////////////////////////////////接收圖片/////////////////////////////////////
 app.post('/uploadimg', function (req, res) {
 
