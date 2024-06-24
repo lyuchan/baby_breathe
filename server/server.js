@@ -19,13 +19,13 @@ const datadb = mysql.createdatadb({
     password: process.env["password"],
     database: 'data' // 資料庫名稱
 });
-const userdb = mysql.createdatadb({
+/*const userdb = mysql.createdatadb({
     host: 'localhost',
     user: process.env["user"],
     password: process.env["password"],
     database: 'userdata' // 資料庫名稱
 });
-
+*/
 datadb.connect((err) => {
     if (err) {
         console.error('無法連線到 MySQL：', err);
