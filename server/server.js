@@ -4,6 +4,7 @@ const fs = require('fs');//系統文件
 const path = require('path');//目錄
 const express = require('express');//網頁
 const mysql = require('mysql');//資料庫
+const axios = require('axios');
 /////////////////////////////////////變數區/////////////////////////////////////
 // 創建 Express 應用程式
 const app = express();
@@ -152,6 +153,28 @@ userdb.connect((err) => {
                 return;
             }
             res.json({ success: true });
+        });
+    })
+    app.get('/user_device_list', function (req, res) {
+        const { user_id } = req.query;
+        const query = `SELECT device FROM linebot_device WHERE linebot_device.uuid = '${user_id}'`
+        userdb.query(query, (err, result) => {
+            if (err) {
+                res.status(500).json({ error: err.code });
+                return;
+            }
+            res.json({ success: true, data: result });
+        });
+    })
+    app.get('/device_user_list', function (req, res) {
+        const { device_id } = req.query;
+        const query = `SELECT uuid FROM linebot_device WHERE linebot_device.device = '${device_id}'`
+        userdb.query(query, (err, result) => {
+            if (err) {
+                res.status(500).json({ error: err.code });
+                return;
+            }
+            res.json({ success: true, data: result });
         });
     })
 })
