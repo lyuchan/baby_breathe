@@ -15,6 +15,15 @@ app.post('/linebotwebhook', line.middleware(config), (req, res) => {
             res.status(500).end();
         });
 });
+app.post('/linepushmsg', (req, res) => {
+    const { msg, user_id } = req.body;
+    client.pushMessage({
+        to: user_id,
+        messages: [msg]
+    });
+    res.json({ success: true });
+});
+
 function handleEvent(event) {
     if (event.type !== 'message' || event.message.type !== 'text') {
         return Promise.resolve(null);
