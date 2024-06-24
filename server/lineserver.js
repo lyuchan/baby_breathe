@@ -19,7 +19,10 @@ app.post('/linepushmsg', (req, res) => {
     const { msg, user_id } = req.body;
     client.pushMessage({
         to: user_id,
-        messages: [msg]
+        messages: [{
+            type: "text",
+            text: msg
+        }]
     });
     res.json({ success: true });
 });
