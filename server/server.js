@@ -31,10 +31,10 @@ const userdb = mysql.createConnection({
 
 datadb.connect((err) => {
     if (err) {
-        console.error('無法連線到 MySQL：', err);
+        console.error('無法連線到datadb', err);
         return;
     }
-    console.log('已成功連線到 MySQL');
+    console.log('已成功連線到datadb');
 
     // 函式：新增或更新資料表
     function createOrUpdateTable(token, freq, up, date) {
@@ -122,10 +122,10 @@ datadb.connect((err) => {
 });
 userdb.connect((err) => {
     if (err) {
-        console.error('無法連線到 MySQL：', err);
+        console.error('無法連線到userdb', err);
         return;
     }
-    console.log('已成功連線到 MySQL');
+    console.log('已成功連線到userdb');
     app.post('/add_device', function (req, res) {
         let { uuid, device, name } = req.body;
         const query = 'INSERT INTO linebot_device (uuid,device,name) VALUES ( ?, ?, ?)';
@@ -691,7 +691,7 @@ function handleEvent(event) {
 /////////////////////////////////////啟動伺服器/////////////////////////////////////
 const line_port = 3001;
 line_app.listen(line_port, () => {
-    console.log(`linebot is listening on ${port}`);
+    console.log(`linebot is listening on ${line_port}`);
 });
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
