@@ -231,7 +231,7 @@ function handleEvent(event) {
         case '拍照':
             echo = {
                 "type": "text",
-                "text": "好歐幫你拍照",
+                "text": `${event.source.userId}`,
             };
             break;
         case '歷史資料':
@@ -241,6 +241,16 @@ function handleEvent(event) {
             };
             break;
         case '裝置管理':
+            const query = `SELECT device FROM linebot_device WHERE linebot_device.uuid = '${user_id}'`
+            userdb.query(query, (err, result) => {
+                if (err) {
+                  //  res.status(500).json({ error: err.code });
+                 //   return;
+                }else{
+
+                }
+               // res.json({ success: true, data: result });
+            });
             echo = {
                 "type": "flex",
                 "altText": "我並未理解您的訊息",
