@@ -254,6 +254,7 @@ function handleEvent(event) {
                     //  res.status(500).json({ error: err.code });
                     //   return;
                 } else {
+                    console.log(result)
                     /*for (let i = 0; i < result.length; i++) {
                         echo.push({
                             "type": "bubble",
