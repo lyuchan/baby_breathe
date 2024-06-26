@@ -35,13 +35,19 @@ function handleEvent(event) {
     switch (event.message.text) {
         case '即時快照':
         case '拍照':
-            echo={
+            echo = {
                 "type": "text",
                 "text": "好歐幫你拍照",
             };
             break;
+        case '歷史資料':
+            echo = {
+                "type": "text",
+                "text": "你要管理哪個裝置",
+            };
+            break;
         case '裝置管理':
-            echo={
+            echo = {
                 "type": "text",
                 "text": "你要管理哪個裝置",
             };
