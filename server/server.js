@@ -241,23 +241,18 @@ function handleEvent(event) {
             const query = `DELETE FROM linebot_device WHERE linebot_device.device = '${resdata.device_id}' AND linebot_device.uuid = '${resdata.uuid}' AND linebot_device.name = '${resdata.name}'`
             userdb.query(query, (err, result) => {
                 if (err) {
-                    if (err.code === 'ER_DUP_ENTRY') {
-                        res.json({ error: 'username_used' });
-                    } else {
-                        res.status(500).json({ error: err.code });
-                    }
                     return;
                 }
-                client.replyMessage({
-                    replyToken: event.replyToken,
-                    messages: [{
-                        "type": "text",
-                        "text": "已刪除",
-                    }],
-                });
-                res.json({ success: true });
-            });
 
+
+            });
+            client.replyMessage({
+                replyToken: event.replyToken,
+                messages: [{
+                    "type": "text",
+                    "text": "已刪除",
+                }],
+            });
         }
     } else if (event.type !== 'message' || event.message.type !== 'text') {
         return Promise.resolve(null);
