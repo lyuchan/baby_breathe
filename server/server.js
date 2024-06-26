@@ -181,7 +181,7 @@ userdb.connect((err) => {
     })
     app.get('/device_ping', function (req, res) {
         const { device_id } = req.query;
-        const query = `UPDATE linebot_device SET ping = GETDATE() WHERE linebot_device.device = ${device_id};`
+        const query = `UPDATE linebot_device SET ping = CURRENT_TIMESTAMP() WHERE linebot_device.device = ${device_id};`
         userdb.query(query, (err, result) => {
             if (err) {
                 res.status(500).json({ error: err.code });
