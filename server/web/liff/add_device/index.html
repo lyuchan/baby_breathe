@@ -156,21 +156,17 @@
             formData.append('uuid', userId);
             formData.append('device', device_id);
             Swal.fire({
-                title: "請輸入小孩名稱",
+                title: "請輸入小孩姓名",
                 input: "text",
                 inputAttributes: {
                     autocapitalize: "off"
                 },
                 confirmButtonText: "確認",
-                preConfirm: (login) => {
-                    if (login == "") {
+                preConfirm: (name) => {
+                    if (name == "") {
                         Swal.fire("名稱不得為空", "", "error")
                     } else {
-                        Swal.fire(`hi ${login}`);
-                    }
-                }
-            })
-            /*
+                        formData.append('name', name);
                         fetch('/add_device', {
                             method: 'POST',
                             headers: {
@@ -183,32 +179,11 @@
                             });
                         })
                             .catch(error => {
-            
-                            })*/
-            /*
-            jQuery.ajax({
-                method: "POST",
-                url: "https://db.lyuchan.com/add_device",
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                contentType: 'application/x-www-form-urlencoded; charset=utf-8',
-                dataType: 'json',
-                data: data,
 
-
-            }).done(function (feedback) {
-                liff.sendMessages([
-                    {
-                        type: 'text',
-                        text: '綁定裝置'
+                            })
                     }
-                ]).then(function (res) {
-                    console.log(res)
-                })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-                liff.closeWindow();
-            })*/
+                }
+            })
         });
         document.getElementById("device_id_error").addEventListener("click", () => {
 
