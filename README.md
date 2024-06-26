@@ -8,6 +8,15 @@ GET https://db.lyuchan.com/api/?freq=data1&up=data2&token=data3
 |up|boolean|是否翻身|
 |token|string|就是token|
 ---
+### 更新狀態
+GET`/device_ping?device_id=XXXXX`
+```json
+{"success": true}
+```
+
+[!NOTE]
+定期訪問，超過1分鐘會顯示下線
+
 ### upload img.
 POST https://db.lyuchan.com/uploadimg
 
@@ -44,5 +53,7 @@ url = 'https://db.lyuchan.com/uploadimg'
 data = {'img': base64_data,'token':'hi'}
 response = requests.post(url, data=data)
 ```
+
+
 ## autopull
 自動更新
