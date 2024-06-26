@@ -248,8 +248,16 @@ function handleEvent(event) {
                     }
                     return;
                 }
+                client.replyMessage({
+                    replyToken: event.replyToken,
+                    messages: [{
+                        "type": "text",
+                        "text": "已刪除",
+                    }],
+                });
                 res.json({ success: true });
             });
+
         }
     } else if (event.type !== 'message' || event.message.type !== 'text') {
         return Promise.resolve(null);
