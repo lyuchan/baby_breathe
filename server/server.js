@@ -266,7 +266,7 @@ function handleEvent(event) {
                     messages: [{
                         type: 'image',
                         originalContentUrl: 'https://placehold.jp/85fffd/000000/640x480.png',
-                        previewImageUrl: 'https://placehold.jp/85fffd/000000/640x480.png'
+                        previewImageUrl: 'https://placehold.jp/85fffd/000000/320x480.png'
 
                     }],
                 });
