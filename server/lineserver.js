@@ -45,6 +45,7 @@ function handleEvent(event) {
                 "type": "text",
                 "text": "你要管理哪個裝置",
             };
+            break;
         default:
             echo = {
                 "type": "flex",
