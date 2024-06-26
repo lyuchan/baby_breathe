@@ -4,7 +4,7 @@ const fs = require('fs');//系統文件
 const path = require('path');//目錄
 const express = require('express');//網頁
 const mysql = require('mysql');//資料庫
-const axios = require('axios');
+const line = require("@line/bot-sdk");//linebot
 /////////////////////////////////////變數區/////////////////////////////////////
 // 創建 Express 應用程式
 const app = express();
@@ -12,7 +12,9 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json({ limit: '500000mb' }));
 app.use(bodyParser.urlencoded({ limit: '500000mb', extended: true }));
 app.use(express.static(__dirname + "/web"));
-// 設定路由處理程序
+const config = { channelSecret: process.env["CHANNEL_SECRET"], };
+const client = new line.messagingApi.MessagingApiClient({ channelAccessToken: process.env["CHANNEL_ACCESS_TOKEN"] });
+
 /////////////////////////////////////mysql/////////////////////////////////////
 const datadb = mysql.createConnection({
     host: 'localhost',
@@ -195,7 +197,502 @@ app.post('/uploadimg', function (req, res) {
     fs.writeFileSync(`./web/img/${filename}`, data, 'base64');
     res.send(encodeURI(filename));
 });
+
+/////////////////////////////////////linebot功能/////////////////////////////////////
+const line_app = express();
+line_app.post('/linebotwebhook', line.middleware(config), (req, res) => {
+    Promise
+        .all(req.body.events.map(handleEvent))
+        .then((result) => res.json(result))
+        .catch((err) => {
+            console.error(err);
+            res.status(500).end();
+        });
+});
+line_app.get('/linepushmsg', (req, res) => {
+    const { text, user_id } = req.query;
+    client.pushMessage({
+        to: user_id,
+        messages: [{
+            type: "text",
+            text: text
+        }]
+    });
+    res.json({ success: true });
+});
+
+function handleEvent(event) {
+    if (event.type !== 'message' || event.message.type !== 'text') {
+        return Promise.resolve(null);
+    }
+    let echo
+    switch (event.message.text) {
+        case '即時快照':
+        case '拍照':
+            echo = {
+                "type": "text",
+                "text": "好歐幫你拍照",
+            };
+            break;
+        case '歷史資料':
+            echo = {
+                "type": "text",
+                "text": "歷史資料",
+            };
+            break;
+        case '裝置管理':
+            echo = {
+                "type": "flex",
+                "altText": "我並未理解您的訊息",
+                'contents': {
+                    "type": "carousel",
+                    "contents": [
+                        {
+                            "type": "bubble",
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "裝置狀態",
+                                        "size": "30px",
+                                        "weight": "bold",
+                                        "align": "center"
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "image",
+                                                "url": "https://cdn-icons-png.flaticon.com/512/404/404956.png",
+                                                "flex": 0,
+                                                "size": "20px",
+                                                "aspectRatio": "1:1"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "小孩名稱",
+                                                "flex": 0,
+                                                "margin": "3px",
+                                                "weight": "bold"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "asokaopsdk",
+                                                "wrap": true,
+                                                "align": "start",
+                                                "flex": 3,
+                                                "margin": "10px"
+                                            }
+                                        ],
+                                        "justifyContent": "flex-start",
+                                        "alignItems": "flex-start",
+                                        "margin": "20px"
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "image",
+                                                "url": "https://cdn-icons-png.flaticon.com/512/80/80932.png",
+                                                "flex": 0,
+                                                "size": "20px",
+                                                "aspectRatio": "1:1"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "裝置名稱",
+                                                "flex": 0,
+                                                "margin": "3px",
+                                                "weight": "bold"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "asokaopsdk",
+                                                "wrap": true,
+                                                "align": "start",
+                                                "flex": 3,
+                                                "margin": "10px"
+                                            }
+                                        ],
+                                        "justifyContent": "flex-start",
+                                        "alignItems": "flex-start",
+                                        "margin": "5px"
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "image",
+                                                "size": "20px",
+                                                "aspectRatio": "1:1",
+                                                "flex": 0,
+                                                "url": "https://cdn-icons-png.flaticon.com/512/1824/1824953.png"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "連接狀態",
+                                                "flex": 0,
+                                                "margin": "3px",
+                                                "weight": "bold"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "線上✅",
+                                                "wrap": true,
+                                                "align": "start",
+                                                "flex": 3,
+                                                "margin": "10px"
+                                            }
+                                        ],
+                                        "justifyContent": "flex-start",
+                                        "alignItems": "flex-start",
+                                        "margin": "5px"
+                                    },
+                                    {
+                                        "type": "button",
+                                        "action": {
+                                            "type": "postback",
+                                            "label": "刪除裝置",
+                                            "data": "hello",
+                                            "displayText": "刪除裝置"
+                                        },
+                                        "style": "primary",
+                                        "margin": "20px",
+                                        "color": "#c82333"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "type": "bubble",
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "裝置狀態",
+                                        "size": "30px",
+                                        "weight": "bold",
+                                        "align": "center"
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "image",
+                                                "url": "https://cdn-icons-png.flaticon.com/512/404/404956.png",
+                                                "flex": 0,
+                                                "size": "20px",
+                                                "aspectRatio": "1:1"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "小孩名稱",
+                                                "flex": 0,
+                                                "margin": "3px",
+                                                "weight": "bold"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "asokaopsdk",
+                                                "wrap": true,
+                                                "align": "start",
+                                                "flex": 3,
+                                                "margin": "10px"
+                                            }
+                                        ],
+                                        "justifyContent": "flex-start",
+                                        "alignItems": "flex-start",
+                                        "margin": "20px"
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "image",
+                                                "url": "https://cdn-icons-png.flaticon.com/512/80/80932.png",
+                                                "flex": 0,
+                                                "size": "20px",
+                                                "aspectRatio": "1:1"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "裝置名稱",
+                                                "flex": 0,
+                                                "margin": "3px",
+                                                "weight": "bold"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "asokaopsdk",
+                                                "wrap": true,
+                                                "align": "start",
+                                                "flex": 3,
+                                                "margin": "10px"
+                                            }
+                                        ],
+                                        "justifyContent": "flex-start",
+                                        "alignItems": "flex-start",
+                                        "margin": "5px"
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "image",
+                                                "size": "20px",
+                                                "aspectRatio": "1:1",
+                                                "flex": 0,
+                                                "url": "https://cdn-icons-png.flaticon.com/512/1824/1824953.png"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "連接狀態",
+                                                "flex": 0,
+                                                "margin": "3px",
+                                                "weight": "bold"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "線上✅",
+                                                "wrap": true,
+                                                "align": "start",
+                                                "flex": 3,
+                                                "margin": "10px"
+                                            }
+                                        ],
+                                        "justifyContent": "flex-start",
+                                        "alignItems": "flex-start",
+                                        "margin": "5px"
+                                    },
+                                    {
+                                        "type": "button",
+                                        "action": {
+                                            "type": "postback",
+                                            "label": "刪除裝置",
+                                            "data": "hello",
+                                            "displayText": "刪除裝置"
+                                        },
+                                        "style": "primary",
+                                        "margin": "20px",
+                                        "color": "#c82333"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "type": "bubble",
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "裝置狀態",
+                                        "size": "30px",
+                                        "weight": "bold",
+                                        "align": "center"
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "image",
+                                                "url": "https://cdn-icons-png.flaticon.com/512/404/404956.png",
+                                                "flex": 0,
+                                                "size": "20px",
+                                                "aspectRatio": "1:1"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "小孩名稱",
+                                                "flex": 0,
+                                                "margin": "3px",
+                                                "weight": "bold"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "asokaopsdk",
+                                                "wrap": true,
+                                                "align": "start",
+                                                "flex": 3,
+                                                "margin": "10px"
+                                            }
+                                        ],
+                                        "justifyContent": "flex-start",
+                                        "alignItems": "flex-start",
+                                        "margin": "20px"
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "image",
+                                                "url": "https://cdn-icons-png.flaticon.com/512/80/80932.png",
+                                                "flex": 0,
+                                                "size": "20px",
+                                                "aspectRatio": "1:1"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "裝置名稱",
+                                                "flex": 0,
+                                                "margin": "3px",
+                                                "weight": "bold"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "asokaopsdk",
+                                                "wrap": true,
+                                                "align": "start",
+                                                "flex": 3,
+                                                "margin": "10px"
+                                            }
+                                        ],
+                                        "justifyContent": "flex-start",
+                                        "alignItems": "flex-start",
+                                        "margin": "5px"
+                                    },
+                                    {
+                                        "type": "box",
+                                        "layout": "horizontal",
+                                        "contents": [
+                                            {
+                                                "type": "image",
+                                                "size": "20px",
+                                                "aspectRatio": "1:1",
+                                                "flex": 0,
+                                                "url": "https://cdn-icons-png.flaticon.com/512/1824/1824953.png"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "連接狀態",
+                                                "flex": 0,
+                                                "margin": "3px",
+                                                "weight": "bold"
+                                            },
+                                            {
+                                                "type": "text",
+                                                "text": "線上✅",
+                                                "wrap": true,
+                                                "align": "start",
+                                                "flex": 3,
+                                                "margin": "10px"
+                                            }
+                                        ],
+                                        "justifyContent": "flex-start",
+                                        "alignItems": "flex-start",
+                                        "margin": "5px"
+                                    },
+                                    {
+                                        "type": "button",
+                                        "action": {
+                                            "type": "postback",
+                                            "label": "刪除裝置",
+                                            "data": "hello",
+                                            "displayText": "刪除裝置"
+                                        },
+                                        "style": "primary",
+                                        "margin": "20px",
+                                        "color": "#c82333"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            };
+            break;
+        default:
+            echo = {
+                "type": "flex",
+                "altText": "我並未理解您的訊息",
+                "contents": {
+                    "type": "bubble",
+                    "body": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "separator",
+                                "color": "#000000"
+                            },
+                            {
+                                "type": "text",
+                                "text": "我並未理解您的訊息",
+                                "size": "25px",
+                                "align": "center",
+                                "weight": "bold",
+                                "margin": "15px"
+                            },
+                            {
+                                "type": "separator",
+                                "color": "#000000",
+                                "margin": "15px"
+                            },
+                            {
+                                "type": "text",
+                                "text": "我有以下功能",
+                                "size": "20px",
+                                "margin": "15px",
+                                "weight": "bold",
+                                "align": "center"
+                            },
+                            {
+                                "type": "button",
+                                "action": {
+                                    "type": "uri",
+                                    "label": "綁定",
+                                    "uri": "https://liff.line.me/2005687870-mLLOD7wA?device_id=lyuchan"
+                                },
+                                "margin": "15px",
+                                "style": "secondary",
+                                "height": "sm"
+                            },
+                            {
+                                "type": "button",
+                                "action": {
+                                    "type": "message",
+                                    "label": "action",
+                                    "text": "hello1"
+                                },
+                                "style": "secondary",
+                                "height": "sm",
+                                "margin": "10px"
+                            },
+                            {
+                                "type": "separator",
+                                "color": "#000000",
+                                "margin": "15px"
+                            }
+                        ]
+                    }
+                }
+            };
+    }
+
+    return client.replyMessage({
+        replyToken: event.replyToken,
+        messages: [echo],
+    });
+}
+
 /////////////////////////////////////啟動伺服器/////////////////////////////////////
+const line_port = 3001;
+line_app.listen(line_port, () => {
+    console.log(`linebot is listening on ${port}`);
+});
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
