@@ -254,7 +254,6 @@ function handleEvent(event) {
                     //  res.status(500).json({ error: err.code });
                     //   return;
                 } else {
-                    console.log(result)
                     /*for (let i = 0; i < result.length; i++) {
                         echo.push({
                             "type": "bubble",
@@ -378,22 +377,11 @@ function handleEvent(event) {
                             }
                         })
                     }*/
-                        client.replyMessage({
-                            replyToken: event.replyToken,
-                            messages: [
-                                {
-                                    "type": "flex",
-                                    "altText": "裝置狀態",
-                                    'contents': {
-                                        "type": "carousel",
-                                        "contents": [echo]
-                                    }
-                                }],
-                        });
+                   
                 }
                 // res.json({ success: true, data: result });
             });
-            client.replyMessage({
+            /*client.replyMessage({
                 replyToken: event.replyToken,
                 messages: [
                     {
@@ -404,6 +392,13 @@ function handleEvent(event) {
                             "contents": [echo]
                         }
                     }],
+            });*/
+            client.replyMessage({
+                replyToken: event.replyToken,
+                messages: [{
+                    "type": "text",
+                    "text": "歷史資料",
+                }],
             });
             break;
         default:
