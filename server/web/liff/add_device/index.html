@@ -163,6 +163,9 @@
                 },
                 confirmButtonText: "確認",
                 preConfirm: (login) => {
+                    if(login==""){
+                        Swal.fire("名稱不得為空", "", "error")
+                    }
                     Swal.fire(`hi ${login}`);
                 }
             })
