@@ -255,7 +255,7 @@ function handleEvent(event) {
                     //   return;
                 } else {
                     console.log(result)
-                    /*for (let i = 0; i < result.length; i++) {
+                    for (let i = 0; i < result.length; i++) {
                         echo.push({
                             "type": "bubble",
                             "body": {
@@ -377,12 +377,12 @@ function handleEvent(event) {
                                 ]
                             }
                         })
-                    }*/
+                    }
                    
                 }
                 // res.json({ success: true, data: result });
             });
-            /*client.replyMessage({
+            client.replyMessage({
                 replyToken: event.replyToken,
                 messages: [
                     {
@@ -393,13 +393,6 @@ function handleEvent(event) {
                             "contents": [echo]
                         }
                     }],
-            });*/
-            client.replyMessage({
-                replyToken: event.replyToken,
-                messages: [{
-                    "type": "text",
-                    "text": "歷史資料",
-                }],
             });
             break;
         default:
