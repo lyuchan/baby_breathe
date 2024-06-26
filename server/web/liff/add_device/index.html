@@ -163,27 +163,28 @@
                 },
                 confirmButtonText: "確認",
                 preConfirm: (login) => {
-                    if(login==""){
+                    if (login == "") {
                         Swal.fire("名稱不得為空", "", "error")
+                    } else {
+                        Swal.fire(`hi ${login}`);
                     }
-                    Swal.fire(`hi ${login}`);
                 }
             })
-/*
-            fetch('/add_device', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: formData.toString()
-            }).then(() => {
-                Swal.fire("已綁定", "", "success").then(() => {
-                    liff.closeWindow();
-                });
-            })
-                .catch(error => {
-
-                })*/
+            /*
+                        fetch('/add_device', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: formData.toString()
+                        }).then(() => {
+                            Swal.fire("已綁定", "", "success").then(() => {
+                                liff.closeWindow();
+                            });
+                        })
+                            .catch(error => {
+            
+                            })*/
             /*
             jQuery.ajax({
                 method: "POST",
