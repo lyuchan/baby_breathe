@@ -233,8 +233,6 @@ line_app.get('/linepushmsg', (req, res) => {
 });
 
 function handleEvent(event) {
-
-    console.log(event)
     if (event.type == 'postback') {
         let resdata = JSON.parse(event.postback.data)
         if (resdata.get == 'delete_device') {
