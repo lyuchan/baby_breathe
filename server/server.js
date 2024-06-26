@@ -270,9 +270,9 @@ function handleEvent(event) {
                     for (let i = 0; i < result.length; i++) {
                         let ping = ""
                         if (((now - new Date(result[i].ping)) / 1000) > 10) {
-                            ping = "🔴未連線🔴"
+                            ping = "未連線 🔴"
                         } else {
-                            ping = "🟢已連線🟢"
+                            ping = "已連線 🟢"
                         }
                         echo.push({
                             "type": "bubble",
