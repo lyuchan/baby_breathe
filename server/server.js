@@ -254,7 +254,8 @@ function handleEvent(event) {
                     //  res.status(500).json({ error: err.code });
                     //   return;
                 } else {
-                    for (let i = 0; i < result.length; i++) {
+                    console.log(result)
+                    /*for (let i = 0; i < result.length; i++) {
                         echo.push({
                             "type": "bubble",
                             "body": {
@@ -376,7 +377,19 @@ function handleEvent(event) {
                                 ]
                             }
                         })
-                    }
+                    }*/
+                        client.replyMessage({
+                            replyToken: event.replyToken,
+                            messages: [
+                                {
+                                    "type": "flex",
+                                    "altText": "裝置狀態",
+                                    'contents': {
+                                        "type": "carousel",
+                                        "contents": [echo]
+                                    }
+                                }],
+                        });
                 }
                 // res.json({ success: true, data: result });
             });
