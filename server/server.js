@@ -488,9 +488,9 @@ function handleEvent(event) {
                                     {
                                         "type": "button",
                                         "action": {
-                                            "type": "uri",
-                                            "label": "綁定",
-                                            "uri": "https://liff.line.me/2005687870-mLLOD7wA?device_id=lyuchan"
+                                            "type": "message",
+                                            "label": "即時快照",
+                                            "text": "即時快照"
                                         },
                                         "margin": "15px",
                                         "style": "secondary",
@@ -500,8 +500,19 @@ function handleEvent(event) {
                                         "type": "button",
                                         "action": {
                                             "type": "message",
-                                            "label": "action",
-                                            "text": "hello1"
+                                            "label": "歷史資料",
+                                            "text": "歷史資料"
+                                        },
+                                        "style": "secondary",
+                                        "height": "sm",
+                                        "margin": "10px"
+                                    },
+                                    {
+                                        "type": "button",
+                                        "action": {
+                                            "type": "message",
+                                            "label": "裝置管理",
+                                            "text": "裝置管理"
                                         },
                                         "style": "secondary",
                                         "height": "sm",
