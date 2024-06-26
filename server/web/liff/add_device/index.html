@@ -151,9 +151,21 @@
             }
         }
         document.getElementById("device_id_success").addEventListener("click", () => {
+
             const formData = new URLSearchParams();
             formData.append('uuid', userId);
             formData.append('device', device_id);
+            Swal.fire({
+                title: "請輸入小孩名稱",
+                input: "text",
+                inputAttributes: {
+                    autocapitalize: "off"
+                },
+                confirmButtonText: "確認",
+                preConfirm: (login) => {
+                    Swal.fire("hi");
+                }
+            })
 
             fetch('/add_device', {
                 method: 'POST',
