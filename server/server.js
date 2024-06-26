@@ -382,7 +382,8 @@ function handleEvent(event) {
                 }
                 // res.json({ success: true, data: result });
             });
-            client.replyMessage({
+            console.log(echo)
+           /* client.replyMessage({
                 replyToken: event.replyToken,
                 messages: [
                     {
@@ -393,6 +394,13 @@ function handleEvent(event) {
                             "contents": [echo]
                         }
                     }],
+            });*/
+            client.replyMessage({
+                replyToken: event.replyToken,
+                messages: [{
+                    "type": "text",
+                    "text": "歷史資料",
+                }],
             });
             break;
         default:
