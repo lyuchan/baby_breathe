@@ -286,7 +286,7 @@ function handleEvent(event) {
                         console.error(err);
                         return;
                     } else {
-                        console.log(result)
+                       // console.log(result)
                         const now = new Date();
                         if (result.length == 0) {
                             client.replyMessage({
