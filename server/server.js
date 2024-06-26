@@ -369,7 +369,7 @@ function handleEvent(event) {
                                             },
                                             {
                                                 "type": "text",
-                                                "text": "線上✅",
+                                                "text": ping,
                                                 "wrap": true,
                                                 "align": "start",
                                                 "flex": 3,
