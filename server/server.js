@@ -179,6 +179,17 @@ userdb.connect((err) => {
             res.json({ success: true, data: result });
         });
     })
+    app.get('/device_ping', function (req, res) {
+        const { device_id } = req.query;
+        const query = `UPDATE linebot_device SET ping = '${Date.now()}' WHERE linebot_device.device = ${device_id};`
+        userdb.query(query, (err, result) => {
+            if (err) {
+                res.status(500).json({ error: err.code });
+                return;
+            }
+            res.json({ success: true });
+        });
+    })
 })
 /////////////////////////////////////接收圖片/////////////////////////////////////
 app.post('/uploadimg', function (req, res) {
@@ -251,8 +262,8 @@ function handleEvent(event) {
             const query = `SELECT * FROM linebot_device WHERE linebot_device.uuid = '${event.source.userId}'`
             userdb.query(query, (err, result) => {
                 if (err) {
-                    //  res.status(500).json({ error: err.code });
-                    //   return;
+                    console.error(err);
+                    return;
                 } else {
                     console.log(result)
                     for (let i = 0; i < result.length; i++) {
@@ -391,95 +402,77 @@ function handleEvent(event) {
                             }],
                     });
                 }
-                // res.json({ success: true, data: result });
             });
-
-            /* client.replyMessage({
-                 replyToken: event.replyToken,
-                 messages: [
-                     {
-                         "type": "flex",
-                         "altText": "裝置狀態",
-                         'contents': {
-                             "type": "carousel",
-                             "contents": [echo]
-                         }
-                     }],
-             });
+            break;
+        default:
             client.replyMessage({
                 replyToken: event.replyToken,
                 messages: [{
-                    "type": "text",
-                    "text": "歷史資料",
-                }],
-            });*/
-            break;
-        default:
-            echo = {
-                "type": "flex",
-                "altText": "我並未理解您的訊息",
-                "contents": {
-                    "type": "bubble",
-                    "body": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [
-                            {
-                                "type": "separator",
-                                "color": "#000000"
-                            },
-                            {
-                                "type": "text",
-                                "text": "我並未理解您的訊息",
-                                "size": "25px",
-                                "align": "center",
-                                "weight": "bold",
-                                "margin": "15px"
-                            },
-                            {
-                                "type": "separator",
-                                "color": "#000000",
-                                "margin": "15px"
-                            },
-                            {
-                                "type": "text",
-                                "text": "我有以下功能",
-                                "size": "20px",
-                                "margin": "15px",
-                                "weight": "bold",
-                                "align": "center"
-                            },
-                            {
-                                "type": "button",
-                                "action": {
-                                    "type": "uri",
-                                    "label": "綁定",
-                                    "uri": "https://liff.line.me/2005687870-mLLOD7wA?device_id=lyuchan"
+                    "type": "flex",
+                    "altText": "我並未理解您的訊息",
+                    "contents": {
+                        "type": "bubble",
+                        "body": {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "separator",
+                                    "color": "#000000"
                                 },
-                                "margin": "15px",
-                                "style": "secondary",
-                                "height": "sm"
-                            },
-                            {
-                                "type": "button",
-                                "action": {
-                                    "type": "message",
-                                    "label": "action",
-                                    "text": "hello1"
+                                {
+                                    "type": "text",
+                                    "text": "我並未理解您的訊息",
+                                    "size": "25px",
+                                    "align": "center",
+                                    "weight": "bold",
+                                    "margin": "15px"
                                 },
-                                "style": "secondary",
-                                "height": "sm",
-                                "margin": "10px"
-                            },
-                            {
-                                "type": "separator",
-                                "color": "#000000",
-                                "margin": "15px"
-                            }
-                        ]
+                                {
+                                    "type": "separator",
+                                    "color": "#000000",
+                                    "margin": "15px"
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "我有以下功能",
+                                    "size": "20px",
+                                    "margin": "15px",
+                                    "weight": "bold",
+                                    "align": "center"
+                                },
+                                {
+                                    "type": "button",
+                                    "action": {
+                                        "type": "uri",
+                                        "label": "綁定",
+                                        "uri": "https://liff.line.me/2005687870-mLLOD7wA?device_id=lyuchan"
+                                    },
+                                    "margin": "15px",
+                                    "style": "secondary",
+                                    "height": "sm"
+                                },
+                                {
+                                    "type": "button",
+                                    "action": {
+                                        "type": "message",
+                                        "label": "action",
+                                        "text": "hello1"
+                                    },
+                                    "style": "secondary",
+                                    "height": "sm",
+                                    "margin": "10px"
+                                },
+                                {
+                                    "type": "separator",
+                                    "color": "#000000",
+                                    "margin": "15px"
+                                }
+                            ]
+                        }
                     }
-                }
-            };
+                }],
+            });
     }
 
 
