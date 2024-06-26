@@ -240,8 +240,9 @@ function handleEvent(event) {
             messages: [
                 {
                     "type": "text",
-                    "text": `type is : ${event.message.type}`
-                }],
+                    "text": `type is : ${event.message.type}`,
+                }
+            ],
         });
     }
     switch (event.message.text) {
