@@ -378,23 +378,23 @@ function handleEvent(event) {
                             }
                         })
                     }
-                   
+                    console.log(echo)
                 }
                 // res.json({ success: true, data: result });
             });
             console.log(echo)
-           /* client.replyMessage({
-                replyToken: event.replyToken,
-                messages: [
-                    {
-                        "type": "flex",
-                        "altText": "裝置狀態",
-                        'contents': {
-                            "type": "carousel",
-                            "contents": [echo]
-                        }
-                    }],
-            });*/
+            /* client.replyMessage({
+                 replyToken: event.replyToken,
+                 messages: [
+                     {
+                         "type": "flex",
+                         "altText": "裝置狀態",
+                         'contents': {
+                             "type": "carousel",
+                             "contents": [echo]
+                         }
+                     }],
+             });*/
             client.replyMessage({
                 replyToken: event.replyToken,
                 messages: [{
