@@ -248,7 +248,7 @@ function handleEvent(event) {
             break;
         case '裝置管理':
             let echo = []
-            const query = `SELECT device FROM linebot_device WHERE linebot_device.uuid = '${event.source.userId}'`
+            const query = `SELECT * FROM linebot_device WHERE linebot_device.uuid = '${event.source.userId}'`
             userdb.query(query, (err, result) => {
                 if (err) {
                     //  res.status(500).json({ error: err.code });
