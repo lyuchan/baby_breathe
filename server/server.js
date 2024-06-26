@@ -234,17 +234,7 @@ line_app.get('/linepushmsg', (req, res) => {
 
 function handleEvent(event) {
 
-    if (event.type !== 'message' || event.message.type !== 'text') {
-        return client.replyMessage({
-            replyToken: event.replyToken,
-            messages: [
-                {
-                    "type": "text",
-                    "text": `type is : ${event.message.type}`,
-                }
-            ],
-        });
-    }
+    console.log(event)
     switch (event.message.text) {
         case '即時快照':
         case '拍照':
