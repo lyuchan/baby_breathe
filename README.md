@@ -13,9 +13,8 @@ GET`/device_ping?device_id=XXXXX`
 ```json
 {"success": true}
 ```
-
-[!NOTE]
-定期訪問，超過1分鐘會顯示下線
+> [!WARNING]
+> 定期訪問，超過1分鐘會顯示下線
 
 ### upload img.
 POST https://db.lyuchan.com/uploadimg
