@@ -264,8 +264,10 @@ function handleEvent(event) {
                 client.replyMessage({
                     replyToken: event.replyToken,
                     messages: [{
-                        "type": "text",
-                        "text": "好歐幫你拍照",
+                        type: 'image',
+                        originalContentUrl: 'https://placehold.jp/85fffd/000000/640x480.png',
+                        previewImageUrl: 'https://placehold.jp/85fffd/000000/640x480.png'
+
                     }],
                 });
                 break;
