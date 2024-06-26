@@ -386,7 +386,7 @@ function handleEvent(event) {
                                 "altText": "裝置狀態",
                                 'contents': {
                                     "type": "carousel",
-                                    "contents": [echo]
+                                    "contents": echo
                                 }
                             }],
                     });
