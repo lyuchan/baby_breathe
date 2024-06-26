@@ -125,9 +125,9 @@ userdb.connect((err) => {
     }
     console.log('已成功連線到 MySQL');
     app.post('/add_device', function (req, res) {
-        let { uuid, device } = req.body;
-        const query = 'INSERT INTO linebot_device (uuid,device) VALUES ( ?, ?)';
-        userdb.query(query, [uuid, device], (err, result) => {
+        let { uuid, device, name } = req.body;
+        const query = 'INSERT INTO linebot_device (uuid,device,name) VALUES ( ?, ?, ?)';
+        userdb.query(query, [uuid, device, name], (err, result) => {
             if (err) {
                 if (err.code === 'ER_DUP_ENTRY') {
                     res.json({ error: 'username_used' });
