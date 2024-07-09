@@ -340,28 +340,30 @@ function handleEvent(event) {
                                 "color": "#000000",
                                 "margin": "15px"
                             })
+                            client.replyMessage({
+                                replyToken: event.replyToken,
+                                messages: [{
+                                    "type": "flex",
+                                    "altText": "我並未理解您的訊息",
+                                    "contents": {
+                                        "type": "bubble",
+                                        "body": {
+                                            "type": "box",
+                                            "layout": "vertical",
+                                            "contents": echo1
+                                        }
+                                    }
+                                }],
+                            });
 
                         }
                     }
+
                 });
 
 
 
-                client.replyMessage({
-                    replyToken: event.replyToken,
-                    messages: [{
-                        "type": "flex",
-                        "altText": "我並未理解您的訊息",
-                        "contents": {
-                            "type": "bubble",
-                            "body": {
-                                "type": "box",
-                                "layout": "vertical",
-                                "contents": echo1
-                            }
-                        }
-                    }],
-                });
+
                 /*client.replyMessage({
                     replyToken: event.replyToken,
                     messages: [{
