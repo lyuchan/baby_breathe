@@ -16,8 +16,22 @@ app.use(bodyParser.urlencoded({ limit: '500000mb', extended: true }));
 app.use(express.static(__dirname + "/web"));
 const config = { channelSecret: process.env["CHANNEL_SECRET"], };
 const client = new line.messagingApi.MessagingApiClient({ channelAccessToken: process.env["CHANNEL_ACCESS_TOKEN"] });
-const wss = new WebSocket.Server({ server });
+
 var crypto = require('crypto');
+/////////////////////////////////////啟動伺服器/////////////////////////////////////
+const line_port = 3001;
+line_app.listen(line_port, () => {
+    console.log(`linebot is listening on ${line_port}`);
+});
+const port = process.env.PORT || 3000;
+const server = app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
+
+function getbase64(i) {
+    return crypto.randomBytes(i).toString('base64url');
+}
+const wss = new WebSocket.Server({ server });
 /////////////////////////////////////mysql/////////////////////////////////////
 const datadb = mysql.createConnection({
     host: 'localhost',
@@ -770,16 +784,3 @@ function handleEvent(event) {
     }
 }
 
-/////////////////////////////////////啟動伺服器/////////////////////////////////////
-const line_port = 3001;
-line_app.listen(line_port, () => {
-    console.log(`linebot is listening on ${line_port}`);
-});
-const port = process.env.PORT || 3000;
-const server = app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
-
-function getbase64(i) {
-    return crypto.randomBytes(i).toString('base64url');
-}
