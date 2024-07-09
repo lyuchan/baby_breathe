@@ -23,10 +23,13 @@ void loop() {
   int z = analogRead(zPin);                // 讀取Z軸電壓值
   
   int difference = abs(x - y);             // 計算X、Y軸的差值（起伏）
-  
+  int UpDown = abs((difference-previousDifference));
+  //Serial.print("X-Y=");Serial.println(abs(x-y));
+  //Serial.print("UpDown=");Serial.println(previousDifference);
   if (difference != previousDifference) {  // 檢查起伏是否有變化
     previousDifference = difference;       // 更新上一次起伏值
     breathCount++;                         // 記錄呼吸變化的次數
+    delay(500);
   }
   
   // 假設Z軸的值大於某個閾值表示翻身
@@ -52,8 +55,9 @@ void loop() {
   Serial.print("翻身: ");
   Serial.println(turnedOver ? "是" : "否");
   
-  if (difference < 60) {           // 無呼吸
+  if (UpDown < 2) {           // 無呼吸
       Serial.println("無呼吸");
+      //Serial.print("起伏=");Serial.println(UpDown);
       }
   
 
