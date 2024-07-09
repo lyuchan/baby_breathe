@@ -311,10 +311,16 @@ function handleEvent(event) {
                             for (let i = 0; i < result.length; i++) {
                                 let ping = ""
                                 if (((now - new Date(result[i].ping)) / 1000) > 10) {
-                                    ping = "未連線 🔴"
+                                    ping += "感測器斷線 🔴"
                                 } else {
-                                    ping = "已連線 🟢"
+                                    ping += "感測器在線 🟢"
                                 }
+                                if (((now - new Date(result[i].cam_ping)) / 1000) > 10) {
+                                    ping += "攝影機斷線 🔴"
+                                } else {
+                                    ping += "攝影機在線 🟢"
+                                }
+
                                 echo.push({
                                     "type": "bubble",
                                     "body": {
