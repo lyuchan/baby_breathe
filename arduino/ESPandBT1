@@ -54,7 +54,7 @@ void loop() {
     int differenceX = abs(currentValueX - previousValueX);
 
     // 如果任一軸的差異大於翻身偵測閾值，則認為發生了翻身，並跳出警告
-    if (currentValueY > 0 || currentValueZ > 0) {
+    if (currentValueY < 320 || currentValueZ < 390) {
       Serial.println("警告：偵測到翻身");
       turnedOver = true;
     }
