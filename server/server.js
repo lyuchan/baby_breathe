@@ -10,6 +10,7 @@ const WebSocket = require('ws');
 /////////////////////////////////////變數區/////////////////////////////////////
 // 創建 Express 應用程式
 const app = express();
+const line_app = express();
 var bodyParser = require('body-parser');
 app.use(bodyParser.json({ limit: '500000mb' }));
 app.use(bodyParser.urlencoded({ limit: '500000mb', extended: true }));
@@ -256,7 +257,7 @@ app.post('/uploadimg', function (req, res) {
 });
 
 /////////////////////////////////////linebot功能/////////////////////////////////////
-const line_app = express();
+
 line_app.post('/linebotwebhook', line.middleware(config), (req, res) => {
     Promise
         .all(req.body.events.map(handleEvent))
