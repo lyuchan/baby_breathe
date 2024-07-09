@@ -5,7 +5,7 @@ const path = require('path');//目錄
 const express = require('express');//網頁
 const mysql = require('mysql');//資料庫
 const line = require("@line/bot-sdk");//linebot
-const SocketServer = require("ws").Server;
+const WebSocket = require('ws');
 
 /////////////////////////////////////變數區/////////////////////////////////////
 // 創建 Express 應用程式
@@ -16,7 +16,8 @@ app.use(bodyParser.urlencoded({ limit: '500000mb', extended: true }));
 app.use(express.static(__dirname + "/web"));
 const config = { channelSecret: process.env["CHANNEL_SECRET"], };
 const client = new line.messagingApi.MessagingApiClient({ channelAccessToken: process.env["CHANNEL_ACCESS_TOKEN"] });
-const wss = new SocketServer({ server });
+const wss = new WebSocket.Server({ server });
+var crypto = require('crypto');
 /////////////////////////////////////mysql/////////////////////////////////////
 const datadb = mysql.createConnection({
     host: 'localhost',
