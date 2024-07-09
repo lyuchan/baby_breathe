@@ -46,7 +46,25 @@ const userdb = mysql.createConnection({
     password: process.env["password"],
     database: 'userdata' // 資料庫名稱
 });
+/////////////////////////////////////ws//////////////////////////////////
+wss.on("connection", (ws) => {
 
+    ws.on("message", (event) => {
+        let res = JSON.parse(event.toString());
+
+    });
+    ws.on("close", () => {
+        console.log("有人斷開連線");
+    });
+});
+
+function send(data) {
+    let clients = wss.clients;
+    clients.forEach((client) => {
+        let sendData = data
+        client.send(sendData);//回去的資料
+    });
+}
 datadb.connect((err) => {
     if (err) {
         console.error('無法連線到datadb', err);
@@ -94,25 +112,9 @@ datadb.connect((err) => {
     //createOrUpdateTable('asdfghjk', t, y, new Date());
     // 結束 MySQL 連線
     //  datadb.end();
-    /////////////////////////////////////ws//////////////////////////////////
-    wss.on("connection", (ws) => {
 
-        ws.on("message", (event) => {
-            let res = JSON.parse(event.toString());
 
-        });
-        ws.on("close", () => {
-            console.log("有人斷開連線");
-        });
-    });
 
-    function send(data) {
-        let clients = wss.clients;
-        clients.forEach((client) => {
-            let sendData = data
-            client.send(sendData);//回去的資料
-        });
-    }
     /////////////////////////////////////api功能/////////////////////////////////////
     app.get('/api', (req, res) => {
         const { token, freq, up } = req.query; // 從查詢參數中獲取 freq 和 up 的值
