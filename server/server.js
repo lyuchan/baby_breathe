@@ -302,7 +302,7 @@ function handleEvent(event) {
                 });
                 break;
             case 'getpic':
-                let picname = "baidu"//getbase64(10);
+                let picname = getbase64(10);
                 send(JSON.stringify({ get: "getpic", device: resdata.device_id, picname: picname }))
                 client.replyMessage({
                     replyToken: event.replyToken,
