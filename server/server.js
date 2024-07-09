@@ -269,8 +269,100 @@ function handleEvent(event) {
         switch (event.message.text) {
             case '即時快照':
             case '拍照':
+                let echo1 = [{
+                    "type": "separator",
+                    "color": "#000000"
+                },
+                {
+                    "type": "text",
+                    "text": "裝置列表",
+                    "size": "25px",
+                    "align": "center",
+                    "weight": "bold",
+                    "margin": "15px"
+                },
+                {
+                    "type": "separator",
+                    "color": "#000000",
+                    "margin": "15px"
+                },
+                {
+                    "type": "text",
+                    "text": "請選擇要查看的裝置",
+                    "size": "20px",
+                    "margin": "15px",
+                    "weight": "bold",
+                    "align": "center"
+                }]
+                let device_count = 0;
+                userdb.query(`SELECT * FROM linebot_device WHERE linebot_device.uuid = '${event.source.userId}'`, (err, result) => {
+                    if (err) {
+                        console.error(err);
+                        return;
+                    } else {
+                        // console.log(result)
+                        const now = new Date();
+                        if (result.length == 0) {
+                            client.replyMessage({
+                                replyToken: event.replyToken,
+                                messages: [{
+                                    "type": "text",
+                                    "text": "目前尚未有裝置，請掃描裝置後方qrcode綁定裝置",
+                                }],
+                            });
+                        } else {
+                            for (let i = 0; i < result.length; i++) {
+
+                                if (((now - new Date(result[i].cam_ping)) / 1000) <= 10) {
+                                    device_count++;
+                                    //ping += "攝影機在線 🟢"
+                                    echo1.push({
+                                        "type": "button",
+                                        "action": {
+                                            "type": "postback",
+                                            "label": result[i].name,
+                                            "data": JSON.stringify({
+                                                "get": "getpic",
+                                                "device_id": result[i].device,
+                                                "uuid": event.source.userId,
+                                                "name": result[i].name
+                                            })
+                                        },
+                                        "margin": "15px",
+                                        "style": "secondary",
+                                        "height": "sm"
+                                    })
+                                }
+
+                            }
+                            echo1.push({
+                                "type": "separator",
+                                "color": "#000000",
+                                "margin": "15px"
+                            })
+
+                        }
+                    }
+                });
+
+
 
                 client.replyMessage({
+                    replyToken: event.replyToken,
+                    messages: [{
+                        "type": "flex",
+                        "altText": "我並未理解您的訊息",
+                        "contents": {
+                            "type": "bubble",
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": echo1
+                            }
+                        }
+                    }],
+                });
+                /*client.replyMessage({
                     replyToken: event.replyToken,
                     messages: [{
                         type: 'image',
@@ -278,7 +370,7 @@ function handleEvent(event) {
                         previewImageUrl: 'https://placehold.jp/85fffd/000000/640x480.png'
 
                     }],
-                });
+                });*/
                 break;
             case '歷史資料':
                 client.replyMessage({
