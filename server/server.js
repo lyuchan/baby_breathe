@@ -5,6 +5,8 @@ const path = require('path');//目錄
 const express = require('express');//網頁
 const mysql = require('mysql');//資料庫
 const line = require("@line/bot-sdk");//linebot
+const SocketServer = require("ws").Server;
+
 /////////////////////////////////////變數區/////////////////////////////////////
 // 創建 Express 應用程式
 const app = express();
@@ -14,7 +16,7 @@ app.use(bodyParser.urlencoded({ limit: '500000mb', extended: true }));
 app.use(express.static(__dirname + "/web"));
 const config = { channelSecret: process.env["CHANNEL_SECRET"], };
 const client = new line.messagingApi.MessagingApiClient({ channelAccessToken: process.env["CHANNEL_ACCESS_TOKEN"] });
-
+const wss = new SocketServer({ server });
 /////////////////////////////////////mysql/////////////////////////////////////
 const datadb = mysql.createConnection({
     host: 'localhost',
@@ -76,7 +78,25 @@ datadb.connect((err) => {
     //createOrUpdateTable('asdfghjk', t, y, new Date());
     // 結束 MySQL 連線
     //  datadb.end();
+    /////////////////////////////////////ws//////////////////////////////////
+    wss.on("connection", (ws) => {
 
+        ws.on("message", (event) => {
+            let res = JSON.parse(event.toString());
+
+        });
+        ws.on("close", () => {
+            console.log("有人斷開連線");
+        });
+    });
+
+    function send(data) {
+        let clients = wss.clients;
+        clients.forEach((client) => {
+            let sendData = data
+            client.send(sendData);//回去的資料
+        });
+    }
     /////////////////////////////////////api功能/////////////////////////////////////
     app.get('/api', (req, res) => {
         const { token, freq, up } = req.query; // 從查詢參數中獲取 freq 和 up 的值
@@ -246,23 +266,117 @@ line_app.get('/linepushmsg', (req, res) => {
 function handleEvent(event) {
     if (event.type == 'postback') {
         let resdata = JSON.parse(event.postback.data)
-        if (resdata.get == 'delete_device') {
-            const query = `DELETE FROM linebot_device WHERE linebot_device.device = '${resdata.device_id}' AND linebot_device.uuid = '${resdata.uuid}' AND linebot_device.name = '${resdata.name}'`
-            userdb.query(query, (err, result) => {
-                if (err) {
-                    return;
-                }
+        switch (resdata.get) {
+            case 'delete_device':
+                const query = `DELETE FROM linebot_device WHERE linebot_device.device = '${resdata.device_id}' AND linebot_device.uuid = '${resdata.uuid}' AND linebot_device.name = '${resdata.name}'`
+                userdb.query(query, (err, result) => {
+                    if (err) {
+                        return;
+                    }
+                });
+                client.replyMessage({
+                    replyToken: event.replyToken,
+                    messages: [{
+                        "type": "text",
+                        "text": "已刪除",
+                    }],
+                });
+                break;
+            case 'getpic':
+                let picname = "baidu"//getbase64(10);
+                send(JSON.stringify({ get: "getpic", device: resdata.device_id, picname: picname }))
+                client.replyMessage({
+                    replyToken: event.replyToken,
+                    messages: [{
+                        type: 'image',
+                        originalContentUrl: `https://db.lyuchan.com/img/${picname}.png`,
+                        previewImageUrl: `https://db.lyuchan.com/img/${picname}.png`
 
-
-            });
-            client.replyMessage({
-                replyToken: event.replyToken,
-                messages: [{
-                    "type": "text",
-                    "text": "已刪除",
-                }],
-            });
+                    }],
+                });
+                break;
+            default:
+                client.replyMessage({
+                    replyToken: event.replyToken,
+                    messages: [{
+                        "type": "flex",
+                        "altText": "我並未理解您的訊息",
+                        "contents": {
+                            "type": "bubble",
+                            "body": {
+                                "type": "box",
+                                "layout": "vertical",
+                                "contents": [
+                                    {
+                                        "type": "separator",
+                                        "color": "#000000"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "我並未理解您的訊息",
+                                        "size": "25px",
+                                        "align": "center",
+                                        "weight": "bold",
+                                        "margin": "15px"
+                                    },
+                                    {
+                                        "type": "separator",
+                                        "color": "#000000",
+                                        "margin": "15px"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "我有以下功能",
+                                        "size": "20px",
+                                        "margin": "15px",
+                                        "weight": "bold",
+                                        "align": "center"
+                                    },
+                                    {
+                                        "type": "button",
+                                        "action": {
+                                            "type": "message",
+                                            "label": "即時快照",
+                                            "text": "即時快照"
+                                        },
+                                        "margin": "15px",
+                                        "style": "secondary",
+                                        "height": "sm"
+                                    },
+                                    {
+                                        "type": "button",
+                                        "action": {
+                                            "type": "message",
+                                            "label": "歷史資料",
+                                            "text": "歷史資料"
+                                        },
+                                        "style": "secondary",
+                                        "height": "sm",
+                                        "margin": "10px"
+                                    },
+                                    {
+                                        "type": "button",
+                                        "action": {
+                                            "type": "message",
+                                            "label": "裝置管理",
+                                            "text": "裝置管理"
+                                        },
+                                        "style": "secondary",
+                                        "height": "sm",
+                                        "margin": "10px"
+                                    },
+                                    {
+                                        "type": "separator",
+                                        "color": "#000000",
+                                        "margin": "15px"
+                                    }
+                                ]
+                            }
+                        }
+                    }],
+                });
         }
+
     } else if (event.type !== 'message' || event.message.type !== 'text') {
         return Promise.resolve(null);
     } else {
@@ -664,3 +778,6 @@ app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
 
+function getbase64(i) {
+    return crypto.randomBytes(i).toString('base64url');
+}
