@@ -190,6 +190,17 @@ userdb.connect((err) => {
             res.json({ success: true });
         });
     })
+    app.get('/cam_ping', function (req, res) {
+        const { device_id } = req.query;
+        const query = `UPDATE linebot_device SET cam_ping = CURRENT_TIMESTAMP() WHERE linebot_device.device = '${device_id}';`
+        userdb.query(query, (err, result) => {
+            if (err) {
+                res.status(500).json({ error: err.code });
+                return;
+            }
+            res.json({ success: true });
+        });
+    })
 })
 /////////////////////////////////////接收圖片/////////////////////////////////////
 app.post('/uploadimg', function (req, res) {
@@ -286,7 +297,7 @@ function handleEvent(event) {
                         console.error(err);
                         return;
                     } else {
-                       // console.log(result)
+                        // console.log(result)
                         const now = new Date();
                         if (result.length == 0) {
                             client.replyMessage({
