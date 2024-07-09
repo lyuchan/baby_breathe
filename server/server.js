@@ -340,22 +340,31 @@ function handleEvent(event) {
                                 "color": "#000000",
                                 "margin": "15px"
                             })
-                            client.replyMessage({
-                                replyToken: event.replyToken,
-                                messages: [{
-                                    "type": "flex",
-                                    "altText": "我並未理解您的訊息",
-                                    "contents": {
-                                        "type": "bubble",
-                                        "body": {
-                                            "type": "box",
-                                            "layout": "vertical",
-                                            "contents": echo1
+                            if (device_count == 0) {
+                                client.replyMessage({
+                                    replyToken: event.replyToken,
+                                    messages: [{
+                                        "type": "text",
+                                        "text": "目前尚未有裝置上線，麻煩請確認裝置連線狀態",
+                                    }],
+                                });
+                            } else {
+                                client.replyMessage({
+                                    replyToken: event.replyToken,
+                                    messages: [{
+                                        "type": "flex",
+                                        "altText": "選擇查看裝置",
+                                        "contents": {
+                                            "type": "bubble",
+                                            "body": {
+                                                "type": "box",
+                                                "layout": "vertical",
+                                                "contents": echo1
+                                            }
                                         }
-                                    }
-                                }],
-                            });
-
+                                    }],
+                                });
+                            }
                         }
                     }
 
