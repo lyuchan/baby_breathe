@@ -326,7 +326,8 @@ function handleEvent(event) {
                                                 "device_id": result[i].device,
                                                 "uuid": event.source.userId,
                                                 "name": result[i].name
-                                            })
+                                            }),
+                                            "displayText": `幫 ${result[i].name} 拍照`
                                         },
                                         "margin": "15px",
                                         "style": "secondary",
