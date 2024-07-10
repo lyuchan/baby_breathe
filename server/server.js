@@ -465,7 +465,7 @@ function handleEvent(event) {
                         } else if (result.length == 1) {
                             if (((now - new Date(result[0].cam_ping)) / 1000) <= 10) {
                                 let picname = getbase64(10);
-                                send(JSON.stringify({ get: "getpic", device: resdata.device_id, picname: picname, replyToken: event.replyToken }))
+                                send(JSON.stringify({ get: "getpic", device: result[0].device, picname: picname, replyToken: event.replyToken }))
                             } else {
                                 client.replyMessage({
                                     replyToken: event.replyToken,
