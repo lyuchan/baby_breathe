@@ -553,7 +553,7 @@ function handleEvent(event) {
                 //const data = new CircularArray(30);
                 let data = []
                 let freqdata = []
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < 30; i++) {
                     data.push(String(i))
                     freqdata.push(getRandomInt(30))
                 }
@@ -569,8 +569,8 @@ function handleEvent(event) {
                     replyToken: event.replyToken,
                     messages: [{
                         type: 'image',
-                        originalContentUrl: encodeURI(`https://db.lyuchan.com/chart?c={type:'line',data:${JSON.stringify(showdata)}}`),
-                        previewImageUrl:  encodeURI(`https://db.lyuchan.com/chart?c={type:'line',data:${JSON.stringify(showdata)}}`)
+                        originalContentUrl: encodeURI(`https://db.lyuchan.com/chart?c={type:'line',data:${JSON.stringify(showdata)}}&backgroundColor=white`),
+                        previewImageUrl: encodeURI(`https://db.lyuchan.com/chart?c={type:'line',data:${JSON.stringify(showdata)}}&backgroundColor=white`)
                     }],
                 });
                 break;
