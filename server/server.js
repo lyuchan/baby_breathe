@@ -775,7 +775,7 @@ function handleEvent(event) {
                                                 "contents": [
                                                     {
                                                         "type": "image",
-                                                        "url": "https://db.lyuchan.com/icon/baby1.png",
+                                                        "url": "https://db.lyuchan.com/icon/baby2.png",
                                                         "flex": 0,
                                                         "size": "20px",
                                                         "aspectRatio": "1:1"
