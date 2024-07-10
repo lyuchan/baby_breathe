@@ -775,7 +775,7 @@ function handleEvent(event) {
                                                 "contents": [
                                                     {
                                                         "type": "image",
-                                                        "url": "https://cdn-icons-png.flaticon.com/512/404/404956.png",
+                                                        "url": "https://db.lyuchan.com/icon/baby.png",
                                                         "flex": 0,
                                                         "size": "20px",
                                                         "aspectRatio": "1:1"
@@ -806,7 +806,7 @@ function handleEvent(event) {
                                                 "contents": [
                                                     {
                                                         "type": "image",
-                                                        "url": "https://cdn-icons-png.flaticon.com/512/80/80932.png",
+                                                        "url": "https://db.lyuchan.com/icon/device.png",
                                                         "flex": 0,
                                                         "size": "20px",
                                                         "aspectRatio": "1:1"
@@ -840,7 +840,7 @@ function handleEvent(event) {
                                                         "size": "20px",
                                                         "aspectRatio": "1:1",
                                                         "flex": 0,
-                                                        "url": "https://cdn-icons-png.flaticon.com/512/1824/1824953.png"
+                                                        "url": "https://db.lyuchan.com/icon/url.png"
                                                     },
                                                     {
                                                         "type": "text",
