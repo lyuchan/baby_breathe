@@ -447,8 +447,18 @@ function handleEvent(event) {
                                 }],
                             });
                         } else if (result.length == 1) {
-                            let picname = getbase64(10);
-                            send(JSON.stringify({ get: "getpic", device: resdata.device_id, picname: picname, replyToken: event.replyToken }))
+                            if (((now - new Date(result[0].cam_ping)) / 1000) <= 10) {
+                                let picname = getbase64(10);
+                                send(JSON.stringify({ get: "getpic", device: resdata.device_id, picname: picname, replyToken: event.replyToken }))
+                            } else {
+                                client.replyMessage({
+                                    replyToken: event.replyToken,
+                                    messages: [{
+                                        "type": "text",
+                                        "text": "目前尚未有裝置上線，麻煩請確認裝置連線狀態",
+                                    }],
+                                });
+                            }
                         } else {
                             for (let i = 0; i < result.length; i++) {
 
