@@ -635,7 +635,7 @@ function handleEvent(event) {
                                     let num = []
                                     for (let i = 0; i < result.length; i++) {
                                         num.push(i)
-                                        data.push(result[result.length - i - 1])
+                                        data.push(result[result.length - i - 1].freq)
                                     }
                                     let showdata = {
                                         labels: num,   // Set X-axis labels
@@ -711,7 +711,7 @@ function handleEvent(event) {
                                             "body": {
                                                 "type": "box",
                                                 "layout": "vertical",
-                                                "contents": echo1
+                                                "contents": echo2
                                             }
                                         }
                                     }],
