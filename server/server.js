@@ -50,7 +50,7 @@ const userdb = mysql.createConnection({
 wss.on("connection", (ws) => {
 
     ws.on("message", (event) => {
-        let res = JSON.parse(event.toString());
+      //  let res = JSON.parse(event.toString());
 
     });
     ws.on("close", () => {
