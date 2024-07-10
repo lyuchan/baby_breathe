@@ -19,6 +19,22 @@ const config = { channelSecret: process.env["CHANNEL_SECRET"], };
 const client = new line.messagingApi.MessagingApiClient({ channelAccessToken: process.env["CHANNEL_ACCESS_TOKEN"] });
 
 var crypto = require('crypto');
+class CircularArray {
+    constructor(size) {
+        this.size = size;
+        this.array = [];
+    }
+    add(element) {
+        if (this.array.length >= this.size) {
+            this.array.shift(); // 移除最早的元素
+        }
+        this.array.push(element); // 添加最新的元素
+    }
+    getArray() {
+        return this.array;
+    }
+}
+
 /////////////////////////////////////啟動伺服器/////////////////////////////////////
 const line_port = 3001;
 line_app.listen(line_port, () => {
@@ -534,11 +550,27 @@ function handleEvent(event) {
                 });*/
                 break;
             case '歷史資料':
+                //const data = new CircularArray(30);
+                let data = []
+                let freqdata = []
+                for (let i = 0; i < 50; i++) {
+                    data.push(String(i))
+                    freqdata.push(getRandomInt(30))
+                }
+
+                let showdata = {
+                    labels: data,   // Set X-axis labels
+                    datasets: [{
+                        label: '頻率',                         // Create the 'Users' dataset
+                        data: freqdata           // Add data to the chart
+                    }]
+                }
                 client.replyMessage({
                     replyToken: event.replyToken,
                     messages: [{
-                        "type": "text",
-                        "text": "歷史資料",
+                        type: 'image',
+                        originalContentUrl: `https://db.lyuchan.com/chart?c={type:'line',data:${JSON.stringify(showdata)}}`,
+                        previewImageUrl: `https://db.lyuchan.com/chart?c={type:'line',data:${JSON.stringify(showdata)}}`
                     }],
                 });
                 break;
@@ -803,3 +835,6 @@ function handleEvent(event) {
     }
 }
 
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
