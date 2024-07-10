@@ -333,7 +333,7 @@ function handleEvent(event) {
                 //console.log(event.replyToken)
                 break;
             case 'getdata':
-                const insertDataSQL = `SELECT * FROM ${resdata.device_id} order by id desc limit 20;`;
+                const insertDataSQL = `SELECT * FROM ${resdata.device_id} order by id desc limit 21;`;
                 datadb.query(insertDataSQL, (err, result) => {
                     if (err) {
                         console.error('err:', err);
@@ -344,7 +344,7 @@ function handleEvent(event) {
                     let num = []
                     for (let i = 0; i < result.length; i++) {
                         num.push(i)
-                        data.push(result[result.length - i - 1])
+                        data.push(result[result.length - i - 1].freq)
                     }
                     let showdata = {
                         labels: num,   // Set X-axis labels
@@ -624,7 +624,7 @@ function handleEvent(event) {
                             });
                         } else if (result.length == 1) {
                             if (((now - new Date(result[0].ping)) / 1000) <= 10) {
-                                const insertDataSQL = `SELECT * FROM ${result[0].device} order by id desc limit ${20};`;
+                                const insertDataSQL = `SELECT * FROM ${result[0].device} order by id desc limit ${21};`;
                                 datadb.query(insertDataSQL, (err, result) => {
                                     if (err) {
                                         console.error('err:', err);
