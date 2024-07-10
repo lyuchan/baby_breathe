@@ -245,7 +245,8 @@ app.post('/uploadimg', function (req, res) {
 
     let data = decodeURI(req.body.img)
     let token = decodeURI(req.body.token)
-    if (data == "undefined" || token == "undefined") {
+    let replyToken = decodeURI(req.body.replyToken)
+    if (data == "undefined" || token == "undefined" || replyToken == "undefined") {
         res.send('data error!');
         return;
     }
@@ -256,23 +257,16 @@ app.post('/uploadimg', function (req, res) {
     let filename = `${token}.png`
     fs.writeFileSync(`./web/img/${filename}`, data, 'base64');
     res.send(encodeURI(filename));
-});
-app.get('/replyimg', function (req, res) {
-    const { picname, replyToken } = req.query;
-
-    if (picname == "undefined" || replyToken == "undefined") {
-        res.send('data error!');
-        return;
-    }
     client.replyMessage({
         replyToken: replyToken,
         messages: [{
             type: 'image',
-            originalContentUrl: `https://db.lyuchan.com/img/${picname}.png`,
-            previewImageUrl: `https://db.lyuchan.com/img/${picname}.png`
+            originalContentUrl: `https://db.lyuchan.com/img/${token}.png`,
+            previewImageUrl: `https://db.lyuchan.com/img/${token}.png`
         }],
     });
 });
+
 
 /////////////////////////////////////linebot功能/////////////////////////////////////
 
