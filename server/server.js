@@ -304,6 +304,7 @@ function handleEvent(event) {
             case 'getpic':
                 let picname = getbase64(10);
                 send(JSON.stringify({ get: "getpic", device: resdata.device_id, picname: picname }))
+                console.log(event.replyToken)
                 client.replyMessage({
                     replyToken: event.replyToken,
                     messages: [{
