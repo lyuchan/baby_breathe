@@ -581,7 +581,7 @@ function handleEvent(event) {
                 break;
             case '歷史資料':
                 //const data = new CircularArray(30);
-                let echo1 = [{
+                let echo2 = [{
                     "type": "separator",
                     "color": "#000000"
                 },
@@ -667,7 +667,7 @@ function handleEvent(event) {
 
                                 if (((now - new Date(result[i].ping)) / 1000) <= 10) {
                                     device_counts++;
-                                    echo1.push({
+                                    echo2.push({
                                         "type": "button",
                                         "action": {
                                             "type": "postback",
@@ -687,7 +687,7 @@ function handleEvent(event) {
                                 }
 
                             }
-                            echo1.push({
+                            echo2.push({
                                 "type": "separator",
                                 "color": "#000000",
                                 "margin": "15px"
