@@ -569,8 +569,8 @@ function handleEvent(event) {
                     replyToken: event.replyToken,
                     messages: [{
                         type: 'image',
-                        originalContentUrl: `https://db.lyuchan.com/chart?c={type:'line',data:${JSON.stringify(showdata)}}`,
-                        previewImageUrl: `https://db.lyuchan.com/chart?c={type:'line',data:${JSON.stringify(showdata)}}`
+                        originalContentUrl: encodeURI(`https://db.lyuchan.com/chart?c={type:'line',data:${JSON.stringify(showdata)}}`),
+                        previewImageUrl:  encodeURI(`https://db.lyuchan.com/chart?c={type:'line',data:${JSON.stringify(showdata)}}`)
                     }],
                 });
                 break;
