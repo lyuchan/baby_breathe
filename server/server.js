@@ -553,7 +553,7 @@ function handleEvent(event) {
                 //const data = new CircularArray(30);
                 let data = []
                 let freqdata = []
-                for (let i = 0; i < 50; i++) {
+                for (let i = 0; i < 10; i++) {
                     data.push(String(i))
                     freqdata.push(getRandomInt(30))
                 }
