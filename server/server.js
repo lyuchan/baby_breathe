@@ -257,6 +257,22 @@ app.post('/uploadimg', function (req, res) {
     fs.writeFileSync(`./web/img/${filename}`, data, 'base64');
     res.send(encodeURI(filename));
 });
+app.get('/replyimg', function (req, res) {
+    const { picname, replyToken } = req.query;
+
+    if (picname == "undefined" || replyToken == "undefined") {
+        res.send('data error!');
+        return;
+    }
+    client.replyMessage({
+        replyToken: replyToken,
+        messages: [{
+            type: 'image',
+            originalContentUrl: `https://db.lyuchan.com/img/${picname}.png`,
+            previewImageUrl: `https://db.lyuchan.com/img/${picname}.png`
+        }],
+    });
+});
 
 /////////////////////////////////////linebot功能/////////////////////////////////////
 
@@ -303,17 +319,9 @@ function handleEvent(event) {
                 break;
             case 'getpic':
                 let picname = getbase64(10);
-                send(JSON.stringify({ get: "getpic", device: resdata.device_id, picname: picname }))
-                console.log(event.replyToken)
-                client.replyMessage({
-                    replyToken: event.replyToken,
-                    messages: [{
-                        type: 'image',
-                        originalContentUrl: `https://db.lyuchan.com/img/${picname}.png`,
-                        previewImageUrl: `https://db.lyuchan.com/img/${picname}.png`
+                send(JSON.stringify({ get: "getpic", device: resdata.device_id, picname: picname, replyToken: event.replyToken }))
+                //console.log(event.replyToken)
 
-                    }],
-                });
                 break;
             default:
                 client.replyMessage({
