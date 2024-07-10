@@ -50,7 +50,7 @@ const userdb = mysql.createConnection({
 wss.on("connection", (ws) => {
 
     ws.on("message", (event) => {
-      //  let res = JSON.parse(event.toString());
+        //  let res = JSON.parse(event.toString());
 
     });
     ws.on("close", () => {
@@ -446,6 +446,9 @@ function handleEvent(event) {
                                     "text": "目前尚未有裝置，請掃描裝置後方qrcode綁定裝置",
                                 }],
                             });
+                        } else if (result.length == 1) {
+                            let picname = getbase64(10);
+                            send(JSON.stringify({ get: "getpic", device: resdata.device_id, picname: picname, replyToken: event.replyToken }))
                         } else {
                             for (let i = 0; i < result.length; i++) {
 
