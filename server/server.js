@@ -6,12 +6,12 @@ const express = require('express');//網頁
 const mysql = require('mysql');//資料庫
 const line = require("@line/bot-sdk");//linebot
 const WebSocket = require('ws');
+var bodyParser = require('body-parser');
 
 /////////////////////////////////////變數區/////////////////////////////////////
 // 創建 Express 應用程式
 const app = express();
 const line_app = express();
-var bodyParser = require('body-parser');
 app.use(bodyParser.json({ limit: '500000mb' }));
 app.use(bodyParser.urlencoded({ limit: '500000mb', extended: true }));
 app.use(express.static(__dirname + "/web"));
