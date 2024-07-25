@@ -31,6 +31,9 @@ app.whenReady().then(() => {
             case 'tologin':
                 win.loadFile("./web/index.html")
                 break;
+            case 'singup':
+                
+                break;
         }
     });
 })

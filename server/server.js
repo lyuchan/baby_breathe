@@ -180,7 +180,7 @@ userdb.connect((err) => {
         return;
     }
     console.log('已成功連線到userdb');
-    app.post('add_user', function (req, res) {
+    app.post('/add_user', function (req, res) {
         let { uuid, password, phone, name } = req.body;
         userdb.query(`INSERT INTO user (username, password, phone, name) VALUES ( ?, ?, ?, ?);`, [uuid, password, phone, name], (err, result) => {
             if(err){
