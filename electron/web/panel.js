@@ -20,6 +20,13 @@ function login() {
         uuid: uuid,
         password: password
     }
+    if(uuid==""||password==""){
+        Toast.fire({
+            icon: 'error',
+            title: '帳號或密碼不得為空'
+        })
+        return;
+    }
     window.api.send("toMain", JSON.stringify(data));
 }
 

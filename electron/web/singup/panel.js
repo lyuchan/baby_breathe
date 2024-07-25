@@ -24,6 +24,14 @@ function singup() {
         uuid: uuid,
         password: CryptoJS.MD5(password).toString()
     }
+
+    if(name==""||phone==""||uuid==""||password==""){
+        Toast.fire({
+            icon: 'error',
+            title: '任一資料不得為空'
+        })
+        return;
+    }
     window.api.send("toMain", JSON.stringify(data));
 }
 function tologin() {
