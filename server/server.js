@@ -180,6 +180,16 @@ userdb.connect((err) => {
         return;
     }
     console.log('已成功連線到userdb');
+    app.post('add_user', function (req, res) {
+        let { uuid, password, phone, name } = req.body;
+        userdb.query(`INSERT INTO user (username, password, phone, name) VALUES ( ?, ?, ?, ?);`, [uuid, password, phone, name], (err, result) => {
+            if(err){
+                res.status(500).json({ error: err.code });
+                return;
+            }
+            res.json({ success: true });
+        })
+    })
     app.post('/add_device', function (req, res) {
         let { uuid, device, name } = req.body;
         const query = 'INSERT INTO linebot_device (uuid,device,name) VALUES ( ?, ?, ?)';
