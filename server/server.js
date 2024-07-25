@@ -19,6 +19,22 @@ const config = { channelSecret: process.env["CHANNEL_SECRET"], };
 const client = new line.messagingApi.MessagingApiClient({ channelAccessToken: process.env["CHANNEL_ACCESS_TOKEN"] });
 
 var crypto = require('crypto');
+class CircularArray {
+    constructor(size) {
+        this.size = size;
+        this.array = [];
+    }
+    add(element) {
+        if (this.array.length >= this.size) {
+            this.array.shift(); // 移除最早的元素
+        }
+        this.array.push(element); // 添加最新的元素
+    }
+    getArray() {
+        return this.array;
+    }
+}
+
 /////////////////////////////////////啟動伺服器/////////////////////////////////////
 const line_port = 3001;
 line_app.listen(line_port, () => {
@@ -50,7 +66,7 @@ const userdb = mysql.createConnection({
 wss.on("connection", (ws) => {
 
     ws.on("message", (event) => {
-        let res = JSON.parse(event.toString());
+        //  let res = JSON.parse(event.toString());
 
     });
     ws.on("close", () => {
@@ -245,7 +261,8 @@ app.post('/uploadimg', function (req, res) {
 
     let data = decodeURI(req.body.img)
     let token = decodeURI(req.body.token)
-    if (data == "undefined" || token == "undefined") {
+    let replyToken = decodeURI(req.body.replyToken)
+    if (data == "undefined" || token == "undefined" || replyToken == "undefined") {
         res.send('data error!');
         return;
     }
@@ -256,7 +273,16 @@ app.post('/uploadimg', function (req, res) {
     let filename = `${token}.png`
     fs.writeFileSync(`./web/img/${filename}`, data, 'base64');
     res.send(encodeURI(filename));
+    client.replyMessage({
+        replyToken: replyToken,
+        messages: [{
+            type: 'image',
+            originalContentUrl: `https://db.lyuchan.com/img/${token}.png`,
+            previewImageUrl: `https://db.lyuchan.com/img/${token}.png`
+        }],
+    });
 });
+
 
 /////////////////////////////////////linebot功能/////////////////////////////////////
 
@@ -303,15 +329,38 @@ function handleEvent(event) {
                 break;
             case 'getpic':
                 let picname = getbase64(10);
-                send(JSON.stringify({ get: "getpic", device: resdata.device_id, picname: picname }))
-                client.replyMessage({
-                    replyToken: event.replyToken,
-                    messages: [{
-                        type: 'image',
-                        originalContentUrl: `https://db.lyuchan.com/img/${picname}.png`,
-                        previewImageUrl: `https://db.lyuchan.com/img/${picname}.png`
-
-                    }],
+                send(JSON.stringify({ get: "getpic", device: resdata.device_id, picname: picname, replyToken: event.replyToken }))
+                //console.log(event.replyToken)
+                break;
+            case 'getdata':
+                const insertDataSQL = `SELECT * FROM ${resdata.device_id} order by id desc limit 21;`;
+                datadb.query(insertDataSQL, (err, result) => {
+                    if (err) {
+                        console.error('err:', err);
+                        return;
+                    }
+                    // console.log(`data is:${result}`);
+                    let data = []
+                    let num = []
+                    for (let i = 0; i < result.length; i++) {
+                        num.push(i)
+                        data.push(result[result.length - i - 1].freq)
+                    }
+                    let showdata = {
+                        labels: num,   // Set X-axis labels
+                        datasets: [{
+                            label: '頻率',                         // Create the 'Users' dataset
+                            data: data           // Add data to the chart
+                        }]
+                    }
+                    client.replyMessage({
+                        replyToken: event.replyToken,
+                        messages: [{
+                            type: 'image',
+                            originalContentUrl: encodeURI(`https://db.lyuchan.com/chart?c={type:'line',data:${JSON.stringify(showdata)}}&backgroundColor=white`),
+                            previewImageUrl: encodeURI(`https://db.lyuchan.com/chart?c={type:'line',data:${JSON.stringify(showdata)}}&backgroundColor=white`)
+                        }],
+                    });
                 });
                 break;
             default:
@@ -443,6 +492,19 @@ function handleEvent(event) {
                                     "text": "目前尚未有裝置，請掃描裝置後方qrcode綁定裝置",
                                 }],
                             });
+                        } else if (result.length == 1) {
+                            if (((now - new Date(result[0].cam_ping)) / 1000) <= 10) {
+                                let picname = getbase64(10);
+                                send(JSON.stringify({ get: "getpic", device: result[0].device, picname: picname, replyToken: event.replyToken }))
+                            } else {
+                                client.replyMessage({
+                                    replyToken: event.replyToken,
+                                    messages: [{
+                                        "type": "text",
+                                        "text": "目前尚未有裝置上線，麻煩請確認裝置連線狀態",
+                                    }],
+                                });
+                            }
                         } else {
                             for (let i = 0; i < result.length; i++) {
 
@@ -518,13 +580,149 @@ function handleEvent(event) {
                 });*/
                 break;
             case '歷史資料':
-                client.replyMessage({
-                    replyToken: event.replyToken,
-                    messages: [{
-                        "type": "text",
-                        "text": "歷史資料",
-                    }],
+                //const data = new CircularArray(30);
+                let echo2 = [{
+                    "type": "separator",
+                    "color": "#000000"
+                },
+                {
+                    "type": "text",
+                    "text": "裝置列表",
+                    "size": "25px",
+                    "align": "center",
+                    "weight": "bold",
+                    "margin": "15px"
+                },
+                {
+                    "type": "separator",
+                    "color": "#000000",
+                    "margin": "15px"
+                },
+                {
+                    "type": "text",
+                    "text": "請選擇要查看的裝置",
+                    "size": "20px",
+                    "margin": "15px",
+                    "weight": "bold",
+                    "align": "center"
+                }]
+                let device_counts = 0;
+                userdb.query(`SELECT * FROM linebot_device WHERE linebot_device.uuid = '${event.source.userId}'`, (err, result) => {
+                    if (err) {
+                        console.error(err);
+                        return;
+                    } else {
+                        // console.log(result)
+                        const now = new Date();
+                        if (result.length == 0) {
+                            client.replyMessage({
+                                replyToken: event.replyToken,
+                                messages: [{
+                                    "type": "text",
+                                    "text": "目前尚未有裝置，請掃描裝置後方qrcode綁定裝置",
+                                }],
+                            });
+                        } else if (result.length == 1) {
+                            if (((now - new Date(result[0].ping)) / 1000) <= 10) {
+                                const insertDataSQL = `SELECT * FROM ${result[0].device} order by id desc limit ${21};`;
+                                datadb.query(insertDataSQL, (err, result) => {
+                                    if (err) {
+                                        console.error('err:', err);
+                                        return;
+                                    }
+                                    // console.log(`data is:${result}`);
+                                    let data = []
+                                    let num = []
+                                    for (let i = 0; i < result.length; i++) {
+                                        num.push(i)
+                                        data.push(result[result.length - i - 1].freq)
+                                    }
+                                    let showdata = {
+                                        labels: num,   // Set X-axis labels
+                                        datasets: [{
+                                            label: '頻率',                         // Create the 'Users' dataset
+                                            data: data           // Add data to the chart
+                                        }]
+                                    }
+                                    client.replyMessage({
+                                        replyToken: event.replyToken,
+                                        messages: [{
+                                            type: 'image',
+                                            originalContentUrl: encodeURI(`https://db.lyuchan.com/chart?c={type:'line',data:${JSON.stringify(showdata)}}&backgroundColor=white`),
+                                            previewImageUrl: encodeURI(`https://db.lyuchan.com/chart?c={type:'line',data:${JSON.stringify(showdata)}}&backgroundColor=white`)
+                                        }],
+                                    });
+                                });
+                            } else {
+                                client.replyMessage({
+                                    replyToken: event.replyToken,
+                                    messages: [{
+                                        "type": "text",
+                                        "text": "目前尚未有裝置上線，麻煩請確認裝置連線狀態",
+                                    }],
+                                });
+                            }
+                        } else {
+                            for (let i = 0; i < result.length; i++) {
+
+                                if (((now - new Date(result[i].ping)) / 1000) <= 10) {
+                                    device_counts++;
+                                    echo2.push({
+                                        "type": "button",
+                                        "action": {
+                                            "type": "postback",
+                                            "label": result[i].name,
+                                            "data": JSON.stringify({
+                                                "get": "getdata",
+                                                "device_id": result[i].device,
+                                                "uuid": event.source.userId,
+                                                "name": result[i].name
+                                            }),
+                                            "displayText": `查看 ${result[i].name} 的呼吸紀錄`
+                                        },
+                                        "margin": "15px",
+                                        "style": "secondary",
+                                        "height": "sm"
+                                    })
+                                }
+
+                            }
+                            echo2.push({
+                                "type": "separator",
+                                "color": "#000000",
+                                "margin": "15px"
+                            })
+                            if (device_counts == 0) {
+                                client.replyMessage({
+                                    replyToken: event.replyToken,
+                                    messages: [{
+                                        "type": "text",
+                                        "text": "目前尚未有裝置上線，麻煩請確認裝置連線狀態",
+                                    }],
+                                });
+                            } else {
+                                client.replyMessage({
+                                    replyToken: event.replyToken,
+                                    messages: [{
+                                        "type": "flex",
+                                        "altText": "選擇查看裝置",
+                                        "contents": {
+                                            "type": "bubble",
+                                            "body": {
+                                                "type": "box",
+                                                "layout": "vertical",
+                                                "contents": echo2
+                                            }
+                                        }
+                                    }],
+                                });
+                            }
+                        }
+                    }
+
                 });
+                ////////////////////////////////////
+
                 break;
             case '裝置管理':
                 let echo = []
@@ -577,7 +775,7 @@ function handleEvent(event) {
                                                 "contents": [
                                                     {
                                                         "type": "image",
-                                                        "url": "https://cdn-icons-png.flaticon.com/512/404/404956.png",
+                                                        "url": "https://db.lyuchan.com/icon/baby2.png",
                                                         "flex": 0,
                                                         "size": "20px",
                                                         "aspectRatio": "1:1"
@@ -608,7 +806,7 @@ function handleEvent(event) {
                                                 "contents": [
                                                     {
                                                         "type": "image",
-                                                        "url": "https://cdn-icons-png.flaticon.com/512/80/80932.png",
+                                                        "url": "https://db.lyuchan.com/icon/device.png",
                                                         "flex": 0,
                                                         "size": "20px",
                                                         "aspectRatio": "1:1"
@@ -642,7 +840,7 @@ function handleEvent(event) {
                                                         "size": "20px",
                                                         "aspectRatio": "1:1",
                                                         "flex": 0,
-                                                        "url": "https://cdn-icons-png.flaticon.com/512/1824/1824953.png"
+                                                        "url": "https://db.lyuchan.com/icon/url.png"
                                                     },
                                                     {
                                                         "type": "text",
@@ -787,3 +985,6 @@ function handleEvent(event) {
     }
 }
 
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}

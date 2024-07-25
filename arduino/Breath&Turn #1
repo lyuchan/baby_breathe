@@ -1,0 +1,78 @@
+const int accelPinX = A0; // GY-61 X軸輸出連接到A0
+const int accelPinY = A1; // GY-61 Y軸輸出連接到A1
+const int accelPinZ = A2; // GY-61 Z軸輸出連接到A2
+const int breathThreshold = 2; // 呼吸偵測閾值
+const unsigned long sampleInterval = 1000; // 每1秒取樣一次
+const unsigned long measurementPeriod = 60000; // 測量周期為1分鐘（60000毫秒）
+const unsigned long warningPeriod = 10000; // 10秒警告周期
+
+void setup() {
+  Serial.begin(9600); // 設定串口通訊速率為9600
+}
+
+void loop() {
+  unsigned long startTime = millis(); // 記錄測量開始的時間
+  unsigned long lastBreathTime = millis(); // 記錄最後一次呼吸的時間
+  int breathCount = 0; // 初始化呼吸次數
+  int previousValueX = 0; // 初始化前一次X軸取樣值
+  int previousValueY = 0; // 初始化前一次Y軸取樣值
+  int previousValueZ = 0; // 初始化前一次Z軸取樣值
+  int currentValueX = 0; // 初始化當前X軸取樣值
+  int currentValueY = 0; // 初始化當前Y軸取樣值
+  int currentValueZ = 0; // 初始化當前Z軸取樣值
+
+  while (millis() - startTime < measurementPeriod) { // 進行1分鐘的測量
+    previousValueX = currentValueX; // 將當前X軸取樣值設為前一次取樣值
+    previousValueY = currentValueY; // 將當前Y軸取樣值設為前一次取樣值
+    previousValueZ = currentValueZ; // 將當前Z軸取樣值設為前一次取樣值
+    currentValueX = analogRead(accelPinX); // 讀取當前X軸加速度計數據
+    currentValueY = analogRead(accelPinY); // 讀取當前Y軸加速度計數據
+    currentValueZ = analogRead(accelPinZ); // 讀取當前Z軸加速度計數據
+
+    
+    /*Serial.print("當前X軸值: ");
+    Serial.print(currentValueX);
+    Serial.print(" 當前Y軸值: ");
+    Serial.print(currentValueY);
+    Serial.print(" 當前Z軸值: ");
+    Serial.println(currentValueZ);*/
+
+    // 計算兩次取樣的差異
+    int differenceX = abs(currentValueX - previousValueX);
+
+    // 如果任一軸的差異大於翻身偵測閾值，則認為發生了翻身，並跳出警告
+    if (currentValueY < 320 || currentValueZ < 380) {
+      Serial.println("警告：偵測到翻身！");
+    }
+
+    // 如果兩次取樣的X軸差異大於呼吸偵測閾值，則認為發生了一次呼吸，並計數一次
+    if (differenceX > breathThreshold) {
+      breathCount++;
+      lastBreathTime = millis(); // 更新最後一次呼吸的時間
+    }
+
+    // 如果10秒內沒有呼吸，則跳出警告
+    if (millis() - lastBreathTime > warningPeriod) {
+      Serial.println("警告：沒有偵測到呼吸");
+      lastBreathTime = millis(); // 重置最後一次呼吸的時間以避免重複警告
+    }
+
+    delay(sampleInterval); // 等待1秒後進行下一次取樣
+  }
+
+  // 輸出一分鐘內的呼吸次數
+  Serial.print("呼吸次數: ");
+  Serial.println(breathCount);
+
+  // 根據呼吸次數判斷呼吸是否正常
+  if (breathCount < 12) {
+    Serial.println("呼吸過慢");
+  } else if (breathCount > 20) {
+    Serial.println("呼吸過快");
+  } else {
+    Serial.println("呼吸正常");
+  }
+
+  // 等待5秒再開始下一個測量周期
+  delay(5000);
+}
