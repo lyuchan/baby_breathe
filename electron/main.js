@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const axios = require('axios');
 const qs = require('qs');
+const { title } = require('process');
 function createWindow(w, h, preloadjs, mainpage) {
     const mainWindow = new BrowserWindow({
         width: w,
@@ -51,11 +52,23 @@ app.whenReady().then(() => {
                 axios.request(config)
                     .then((response) => {
                         console.log(JSON.stringify(response.data));
+                        win.webContents.send("fromMain", JSON.stringify({
+                            get:"popup",
+                            icon:"success",
+                            title:"成功註冊，請再次登入"
+                        }));
                     })
                     .catch((error) => {
-                        //console.log(error);
+                        win.webContents.send("fromMain", JSON.stringify({
+                            get:"popup",
+                            icon:"error",
+                            title:"此帳號已被使用"
+                        }));
                     });
 
+                break;
+            case 'login':
+                
                 break;
         }
     });

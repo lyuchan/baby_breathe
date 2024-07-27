@@ -183,13 +183,29 @@ userdb.connect((err) => {
     app.post('/add_user', function (req, res) {
         let { uuid, password, phone, name } = req.body;
         userdb.query(`INSERT INTO user (username, password, phone, name) VALUES ( ?, ?, ?, ?);`, [uuid, password, phone, name], (err, result) => {
-            if(err){
+            if (err) {
                 res.status(500).json({ error: err.code });
                 return;
             }
             res.json({ success: true });
         })
     })
+    app.post('/login', function (req, res) {
+        let { username, password } = req.body;
+        const query = 'SELECT * FROM user WHERE username = ? AND password = ?';
+        userdb.query(query, [username, password], (err, results) => {
+            if (err) {
+                res.status(500).json({ error: 'Database query error' });
+                return;
+            }
+            if (results.length > 0) {
+                res.status(200).json({ success: true });
+            } else {
+                res.status(200).json({ error: 'not_found' });
+            }
+        });
+    })
+
     app.post('/add_device', function (req, res) {
         let { uuid, device, name } = req.body;
         const query = 'INSERT INTO linebot_device (uuid,device,name) VALUES ( ?, ?, ?)';
