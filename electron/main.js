@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
-
+const axios = require('axios');
+const qs = require('qs');
 function createWindow(w, h, preloadjs, mainpage) {
     const mainWindow = new BrowserWindow({
         width: w,
@@ -32,7 +33,29 @@ app.whenReady().then(() => {
                 win.loadFile("./web/index.html")
                 break;
             case 'singup':
-                
+                let data = qs.stringify({
+                    'uuid': res.uuid,
+                    'password': res.password,
+                    'phone': res.phone,
+                    'name': res.name
+                });
+                let config = {
+                    method: 'post',
+                    maxBodyLength: Infinity,
+                    url: 'https://db.lyuchan.com/add_user',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    data: data
+                };
+                axios.request(config)
+                    .then((response) => {
+                        console.log(JSON.stringify(response.data));
+                    })
+                    .catch((error) => {
+                        //console.log(error);
+                    });
+
                 break;
         }
     });
