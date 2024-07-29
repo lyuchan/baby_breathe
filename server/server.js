@@ -281,6 +281,7 @@ userdb.connect((err) => {
             res.json({ success: true });
         });
     })
+
 })
 /////////////////////////////////////接收圖片/////////////////////////////////////
 app.post('/uploadimg', function (req, res) {
@@ -322,7 +323,7 @@ line_app.post('/linebotwebhook', line.middleware(config), (req, res) => {
         });
 });
 
-line_app.get('/linepushmsg', (req, res) => {
+app.get('/linepushmsg', (req, res) => {
     const { text, user_id } = req.query;
     client.pushMessage({
         to: user_id,
@@ -333,6 +334,30 @@ line_app.get('/linepushmsg', (req, res) => {
     });
     res.json({ success: true });
 });
+
+
+app.get('/alert', (req, res) => {
+    const { device, alertText } = req.query;
+    const query = `SELECT * FROM linebot_device WHERE linebot_device.device='${device}';`
+    userdb.query(query, (err, result) => {
+        if (err) {
+            res.status(500).json({ error: err.code });
+            return;
+        }
+        result.forEach(element => {
+           console.log(element.name) 
+        });
+    });
+    client.pushMessage({
+        to: user_id,
+        messages: [{
+            type: "text",
+            text: text
+        }]
+    });
+    res.json({ success: true });
+});
+
 
 function handleEvent(event) {
     if (event.type == 'postback') {
