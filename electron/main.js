@@ -1,6 +1,9 @@
+try {
+    require('electron-reloader')(module, {});
+} catch (_) { }
 const { app, BrowserWindow, ipcMain } = require('electron')
-const path = require('path')
-const axios = require('axios');
+const path = require('path');
+const request = require('request');
 const qs = require('qs');
 const { title } = require('process');
 function createWindow(w, h, preloadjs, mainpage) {
@@ -34,41 +37,78 @@ app.whenReady().then(() => {
                 win.loadFile("./web/index.html")
                 break;
             case 'singup':
-                let data = qs.stringify({
-                    'uuid': res.uuid,
-                    'password': res.password,
-                    'phone': res.phone,
-                    'name': res.name
-                });
-                let config = {
-                    method: 'post',
-                    maxBodyLength: Infinity,
-                    url: 'https://db.lyuchan.com/add_user',
-                    headers: {
+                request({
+                    'method': 'POST',
+                    'url': 'https://db.lyuchan.com/add_user',
+                    'headers': {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    data: data
-                };
-                axios.request(config)
-                    .then((response) => {
-                        console.log(JSON.stringify(response.data));
+                    form: {
+                        'uuid': res.uuid,
+                        'password': res.password,
+                        'phone': res.phone,
+                        'name': res.name
+                    }
+                }, function (error, response) {
+                    if (error) {
                         win.webContents.send("fromMain", JSON.stringify({
-                            get:"popup",
-                            icon:"success",
-                            title:"成功註冊，請再次登入"
+                            get: "popup",
+                            icon: "error",
+                            title: "錯誤，請聯繫開發者"
                         }));
-                    })
-                    .catch((error) => {
+                        return;
+                    };
+                    //console.log(response.body);
+                    if (JSON.parse(response.body).success == undefined) {
                         win.webContents.send("fromMain", JSON.stringify({
-                            get:"popup",
-                            icon:"error",
-                            title:"此帳號已被使用"
+                            get: "popup",
+                            icon: "error",
+                            title: "此帳號已被使用"
                         }));
-                    });
+                    } else {
+                        win.webContents.send("fromMain", JSON.stringify({
+                            get: "popup",
+                            icon: "success",
+                            title: "成功註冊，請再次登入"
+                        }));
+                    }
 
+                });
                 break;
             case 'login':
-                
+                request({
+                    'method': 'POST',
+                    'url': 'https://db.lyuchan.com/login',
+                    'headers': {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    form: {
+                        'username': res.uuid,
+                        'password': res.password
+                    }
+                }, function (error, response) {
+                    if (error) {
+                        win.webContents.send("fromMain", JSON.stringify({
+                            get: "popup",
+                            icon: "error",
+                            title: "錯誤，請聯繫開發者"
+                        }));
+                        return;
+                    };
+                    console.log(response.body);
+                    if (JSON.parse(response.body).success == undefined) {
+                        win.webContents.send("fromMain", JSON.stringify({
+                            get: "popup",
+                            icon: "error",
+                            title: "帳號或密碼錯誤"
+                        }));
+                    } else {
+                        win.loadFile("./web/panel/index.html")
+                    }
+                });
+                break;
+            case 'logout':
+                win.loadFile("./web/index.html")
                 break;
         }
     });

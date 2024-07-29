@@ -10,6 +10,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^31.2.1"
+    "electron": "^31.2.1",
+    "electron-reloader": "^1.2.3"
+  },
+  "dependencies": {
+    "request": "^2.88.2"
   }
 }

@@ -18,7 +18,7 @@ function login() {
     data = {
         get: 'login',
         uuid: uuid,
-        password: password
+        password: CryptoJS.MD5(password).toString()
     }
     if (uuid == "" || password == "") {
         Toast.fire({
