@@ -344,18 +344,21 @@ app.get('/alert', (req, res) => {
             res.status(500).json({ error: err.code });
             return;
         }
+        if (result.length == 0) {
+            res.json({ error: "nodata" });
+            return;
+        }
         result.forEach(element => {
-           console.log(element.name) 
+            console.log(element.name)
+            client.pushMessage({
+                to: element.uuid,
+                messages: [{
+                    type: "text",
+                    text: alertText
+                }]
+            });
         });
     });
-   /* client.pushMessage({
-        to: user_id,
-        messages: [{
-            type: "text",
-            text: text
-        }]
-    });
-    */
     res.json({ success: true });
 });
 
