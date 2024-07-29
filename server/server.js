@@ -348,13 +348,14 @@ app.get('/alert', (req, res) => {
            console.log(element.name) 
         });
     });
-    client.pushMessage({
+   /* client.pushMessage({
         to: user_id,
         messages: [{
             type: "text",
             text: text
         }]
     });
+    */
     res.json({ success: true });
 });
 
