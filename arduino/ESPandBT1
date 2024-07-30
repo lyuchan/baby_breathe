@@ -123,6 +123,31 @@ void loop() {
   } else {
     Serial.println("WiFi 未連接");
   }
+  app.get('/alert', (req, res) => {
+      const { device, alertText } = req.query;
+      const query = `SELECT * FROM linebot_device WHERE linebot_device.device='${device}';`
+      userdb.query(query, (err, result) => {
+          if (err) {
+              res.status(500).json({ error: err.code });
+              return;
+          }
+          if (result.length == 0) {
+              res.json({ error: "nodata" });
+              return;
+          }
+          result.forEach(element => {
+              console.log(element.name)
+              client.pushMessage({
+                  to: element.uuid,
+                  messages: [{
+                      type: "text",
+                      text: alertText
+                  }]
+              });
+          });
+      });
+      res.json({ success: true });
+  });
 
   delay(5000); // 延遲5秒後進行下一次測量
 }
