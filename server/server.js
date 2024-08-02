@@ -289,6 +289,7 @@ app.post('/uploadimg', function (req, res) {
     let data = decodeURI(req.body.img)
     let token = decodeURI(req.body.token)
     let replyToken = decodeURI(req.body.replyToken)
+    let pushmsg = decodeURI(req.body.pushmsg)
     if (data == "undefined" || token == "undefined" || replyToken == "undefined") {
         res.send('data error!');
         return;
@@ -300,14 +301,44 @@ app.post('/uploadimg', function (req, res) {
     let filename = `${token}.png`
     fs.writeFileSync(`./web/img/${filename}`, data, 'base64');
     res.send(encodeURI(filename));
-    client.replyMessage({
-        replyToken: replyToken,
-        messages: [{
-            type: 'image',
-            originalContentUrl: `https://db.lyuchan.com/img/${token}.png`,
-            previewImageUrl: `https://db.lyuchan.com/img/${token}.png`
-        }],
-    });
+    if (pushmsg == 'true') {
+        const query = `SELECT * FROM linebot_device WHERE linebot_device.device='${replyToken}';`
+        userdb.query(query, (err, result) => {
+            if (err) {
+                res.status(500).json({ error: err.code });
+                return;
+            }
+            if (result.length == 0) {
+                res.json({ error: "nodata" });
+                return;
+            }
+            result.forEach(element => {
+                console.log(element.name)
+                client.pushMessage({
+                    to: element.uuid,
+                    messages: [{
+                        type: 'image',
+                        originalContentUrl: `https://db.lyuchan.com/img/${token}.png`,
+                        previewImageUrl: `https://db.lyuchan.com/img/${token}.png`
+                    }]
+                });
+                res.json({ success: true });
+            });
+        });
+
+    } else {
+        client.replyMessage({
+            replyToken: replyToken,
+            messages: [{
+                type: 'image',
+                originalContentUrl: `https://db.lyuchan.com/img/${token}.png`,
+                previewImageUrl: `https://db.lyuchan.com/img/${token}.png`
+            }],
+        });
+        res.json({ success: true });
+    }
+
+
 });
 
 
@@ -361,7 +392,33 @@ app.get('/alert', (req, res) => {
     });
     res.json({ success: true });
 });
-
+app.get('/alertimg', (req, res) => {
+    const { device, alertText } = req.query;
+    const query = `SELECT * FROM linebot_device WHERE linebot_device.device='${device}';`
+    userdb.query(query, (err, result) => {
+        if (err) {
+            res.status(500).json({ error: err.code });
+            return;
+        }
+        if (result.length == 0) {
+            res.json({ error: "nodata" });
+            return;
+        }
+        result.forEach(element => {
+            console.log(element.name)
+            client.pushMessage({
+                to: element.uuid,
+                messages: [{
+                    type: "text",
+                    text: alertText
+                }]
+            });
+        });
+    });
+    let picname = getbase64(10);
+    send(JSON.stringify({ get: "getpic", device: device, picname: picname, replyToken: device, pushmsg: 'true' }));
+    res.json({ success: true });
+});
 
 function handleEvent(event) {
     if (event.type == 'postback') {
@@ -384,7 +441,7 @@ function handleEvent(event) {
                 break;
             case 'getpic':
                 let picname = getbase64(10);
-                send(JSON.stringify({ get: "getpic", device: resdata.device_id, picname: picname, replyToken: event.replyToken }))
+                send(JSON.stringify({ get: "getpic", device: resdata.device_id, picname: picname, replyToken: event.replyToken, pushmsg: 'false' }))
                 //console.log(event.replyToken)
                 break;
             case 'getdata':
