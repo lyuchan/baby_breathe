@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>綁定裝置</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400&display=swap');
+
+    body {
+        font-family: 'Roboto Mono', monospace;
+        display: flex;
+        background-color: #111111;
+        justify-content: center;
+    }
+
+    h1 {
+        color: #fff;
+        text-align: center;
+        font-size: 5vw;
+    }
+
+    h2 {
+        color: #fff;
+        text-align: center;
+        font-size: 5vw;
+        letter-spacing: 1vw;
+    }
+
+    .border {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 90%;
+        padding: 10px;
+        background: #222222;
+        color: #fff;
+        border-radius: 10px;
+
+    }
+
+    .border2 {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 90%;
+        padding: 10px;
+        background: #0c0c0c;
+        color: #fff;
+        border-radius: 10px;
+
+    }
+
+    .btn {
+        background-color: #1A3140;
+        color: #FFFFFF;
+        font-size: 20px;
+        padding: 10px 50px;
+        border-radius: 10px;
+        cursor: pointer;
+        border: 0;
+    }
+
+    .su {
+        background-color: #028a6a;
+    }
+
+    .er {
+        background-color: #d84e46;
+    }
+</style>
+
+<body>
+    <div class="border">
+        <h1>請確認該裝置背面序號是否符合</h1>
+        <div class="border2">
+            <h2 id="device_id"></h2>
+        </div>
+        <div>
+            <p></p>
+            <div style="display: flex;justify-content: center;">
+                <button id="device_id_success" class="btn su" style="display: none;">序號正確</button>
+                <p style="color: #222222;">被你<br>發現了</p>
+                <button id="device_id_error" class="btn er" style="display: none;">序號錯誤</button>
+            </div>
+        </div>
+    </div>
+    <h2 id="userid"></h2>
+    <h2 id="id_token"></h2>
+
+
+    <script>
+
+        var params = new URLSearchParams(new URL(window.location.href).search);
+        let device_id = params.get('device_id');
+
+        var userId = '';
+        var result = {};
+        window.onload = function (e) {
+            initializeLiff('2005687870-mLLOD7wA');
+        };
+
+        function initializeLiff(myLiffId) {
+            liff
+                .init({
+                    liffId: myLiffId
+                })
+                .then(() => {
+                    // start to use LIFF's api
+                    initializeApp();
+                })
+                .catch((err) => {
+                    //document.getElementById("liffAppContent").classList.add('hidden');
+                    //document.getElementById("liffInitErrorMessage").classList.remove('hidden');
+                });
+        }
+
+        function initializeApp(data) {
+            if (liff.isLoggedIn()) {
+                liff.getProfile().then(function (profile) {
+                    userId = profile.userId;
+                    document.getElementById('device_id_success').style = "display: block;";
+                    document.getElementById('device_id_error').style = "display: block;";
+                    document.getElementById('device_id').innerHTML = `${device_id}`;
+                    //document.getElementById('userid').innerHTML = `userid is:${profile.userId}`;
+                    // document.getElementById('id_token').innerHTML = `token is:${liff.getIDToken()}`;
+
+                    /*jQuery.ajax({
+                        method: "POST",
+                        url: "https://03fd-123-51-159-64.ngrok-free.app/getstart",
+                        dataType: "json",
+                        data: `id_token=${liff.getIDToken()}&user_id=${userId}&charger_id=${charger_id}&station_id=7`
+                    }).done(function (feedback) {
+                        alert(feedback.msg);
+                    })*/
+                }).catch(function (error) {
+                    //window.alert("Error getting profile: " + error);
+                    //document.getElementById('charger_id').textContent = '查詢失敗，網路環境異常，請稍後再試';
+                });
+            } else {
+                liff.login({ redirectUri: 'https://liff.line.me/2005553288-GWg7kzgQ' });
+            }
+        }
+        document.getElementById("device_id_success").addEventListener("click", () => {
+
+            const formData = new URLSearchParams();
+            formData.append('uuid', userId);
+            formData.append('device', device_id);
+            Swal.fire({
+                title: "請輸入小孩姓名",
+                input: "text",
+                inputAttributes: {
+                    autocapitalize: "off"
+                },
+                confirmButtonText: "確認",
+                preConfirm: (name) => {
+                    if (name == "") {
+                        Swal.fire("名稱不得為空", "", "error")
+                    } else {
+                        formData.append('name', name);
+                        fetch('/add_device', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: formData.toString()
+                        }).then(() => {
+                            Swal.fire("已綁定", "", "success").then(() => {
+                                liff.closeWindow();
+                            });
+                        })
+                            .catch(error => {
+
+                            })
+                    }
+                }
+            })
+        });
+        document.getElementById("device_id_error").addEventListener("click", () => {
+
+            Swal.fire("已取消綁定", "", "success").then(() => {
+                liff.closeWindow();
+            });
+
+
+        });
+
+        jQuery(document).ready(function () {
+
+
+        });
+
+
+    </script>
+</body>
+
+</html>
