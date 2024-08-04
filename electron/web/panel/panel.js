@@ -198,19 +198,19 @@ function reloadTally() {
 function settings() {
     //swal html settings
     Swal.fire({
-        title: '設定',
+        title: '綁定LINE帳號',
         html: $('#settings-template').text(),
-        showCancelButton: true,
+        // showCancelButton: true,
         focusConfirm: false,
         confirmButtonText: '確定',
-        cancelButtonText: '取消',
-        preConfirm: () => {
+        //cancelButtonText: '取消',
+       /* preConfirm: () => {
             const opt = Swal.getPopup().querySelector('#type-opt').value;
             const opt2 = Swal.getPopup().querySelector('#ip').value;
             console.log(opt);
             console.log(opt2);
             setip(opt, opt2);
             return;
-        }
+        }*/
     })
 }
