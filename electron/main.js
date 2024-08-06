@@ -84,7 +84,9 @@ app.whenReady().then(() => {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
                     form: {
-                        'username': username
+                        'username': res.uuid,
+                        'password': res.password
+
                     }
                 }, function (error, response) {
                     if (error) {
@@ -112,8 +114,7 @@ app.whenReady().then(() => {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
                     form: {
-                        'username': res.uuid,
-                        'password': res.password
+                        'username': username
                     }
                 }, function (error, response) {
                     if (error) {
