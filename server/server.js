@@ -181,6 +181,7 @@ userdb.connect((err) => {
         return;
     }
     console.log('已成功連線到userdb');
+
     app.post('/add_user', function (req, res) {
         let { uuid, password, phone, name } = req.body;
         userdb.query(`INSERT INTO user (username, password, phone, name) VALUES ( ?, ?, ?, ?);`, [uuid, password, phone, name], (err, result) => {
@@ -193,13 +194,18 @@ userdb.connect((err) => {
     })
     app.post('/login', function (req, res) {
         let { username, password } = req.body;
-        const query = 'SELECT * FROM user WHERE username = ? AND password = ?';
-        userdb.query(query, [username, password], (err, results) => {
+
+        userdb.query('SELECT * FROM user WHERE username = ? AND password = ?', [username, password], (err, results) => {
             if (err) {
                 res.status(500).json({ error: 'Database query error' });
                 return;
             }
+
             if (results.length > 0) {
+                console.log(results[0].uuid);
+                if (results[0].uuid != undefined) {
+
+                }
                 res.status(200).json({ success: true });
             } else {
                 res.status(200).json({ error: 'not_found' });
