@@ -84,6 +84,34 @@ app.whenReady().then(() => {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
                     form: {
+                        'username': username
+                    }
+                }, function (error, response) {
+                    if (error) {
+                        win.webContents.send("fromMain", JSON.stringify({
+                            get: "popup",
+                            icon: "error",
+                            title: "錯誤，請聯繫開發者"
+                        }));
+                        return;
+                    };
+                    console.log(response.body);
+                });
+                break;
+            case 'logout':
+                win.loadFile("./web/index.html")
+                break;
+            case 'username':
+                win.webContents.send("fromMain", JSON.stringify({ get: "username", username: username }));
+                break;
+            case 'userdata':
+                request({
+                    'method': 'POST',
+                    'url': 'https://db.lyuchan.com/getuserdata',
+                    'headers': {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    form: {
                         'username': res.uuid,
                         'password': res.password
                     }
@@ -108,13 +136,7 @@ app.whenReady().then(() => {
                         username = res.uuid;
                     }
                 });
-                break;
-            case 'logout':
-                win.loadFile("./web/index.html")
-                break;
-            case 'username':
-                win.webContents.send("fromMain", JSON.stringify({ get: "username", username: username }));
-                break;
+            //getuserdata
         }
     });
 })

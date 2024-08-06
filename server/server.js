@@ -202,13 +202,44 @@ userdb.connect((err) => {
             }
 
             if (results.length > 0) {
-                console.log(results[0].uuid);
-                if (results[0].uuid != undefined) {
-
-                }
                 res.status(200).json({ success: true });
             } else {
                 res.status(200).json({ error: 'not_found' });
+            }
+        });
+    })
+    app.post('/getuserdata', function (req, res) {
+        let { username } = req.body;
+
+        userdb.query('SELECT * FROM user WHERE username = ? ', [username], (err, results) => {
+            if (err) {
+                res.status(500).json({ error: 'Database query error' });
+                return;
+            }
+
+            if (results.length > 0) {
+                console.log(results[0].uuid);
+                if (results[0].uuid != 'null') {
+                    userdb.query('SELECT * FROM line_user WHERE uuid = ? ', [results[0].uuid], (err, results) => {
+                        if (err) {
+                            res.status(500).json({ error: 'Database query error' });
+                            return;
+                        }
+                        if (results.length > 0) {
+                            res.status(200).json({ success: true, data: results });
+                            return;
+                        } else {
+                            res.status(200).json({ error: 'not_found' });
+                            return;
+                        }
+                    });
+                } else {
+                    res.status(200).json({ error: 'no_line_id' });
+                    return;
+                }
+            } else {
+                res.status(200).json({ error: 'not_found' });
+                return;
             }
         });
     })
