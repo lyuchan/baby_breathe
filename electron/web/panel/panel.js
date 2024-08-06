@@ -1,8 +1,8 @@
 
 
-window.api.send("toMain", JSON.stringify({ get: 'tallyip', }));
+window.api.send("toMain", JSON.stringify({ get: 'username', }));
 
-
+let username;
 
 const Toast = Swal.mixin({
     toast: true,
@@ -33,6 +33,7 @@ function logout() {
     }
     window.api.send("toMain", JSON.stringify(data));
 }
+/*
 function atemip() {
     const atemip = $("#atemip").val();
     if (atemip === "") {
@@ -100,67 +101,18 @@ function setip(opt, ip) {
         ip: ip
     }
     window.api.send("toMain", JSON.stringify(data));
-}
+}*/
 window.api.receive("fromMain", (event) => {
     // console.log(`Received ${data} from main process`);
 
     console.log('Message from server ', event);
     const data = JSON.parse(event);
-    if (data.get === 'login') {
-        if (!data.password) {
+    if (data.get === 'username') {
+        username = data.username;
+    }
 
-            swal.fire("Error", "Wrong password", "error");
-        }
-    }
-    if (data.get === 'connect') {
-        if (data.data) {
-            Toast.fire({
-                icon: 'success',
-                title: '連線成功'
-            })
-        } else {
-            Toast.fire({
-                icon: 'error',
-                title: '連線失敗，請檢查設定'
-            })
-        }
-    }
-    if (data.get === 'error') {
-
-        Toast.fire({
-            icon: 'error',
-            title: data.data
-        })
-
-    }
-    if (data.get === 'findtally') {
-        if (data.data) {
-            Toast.fire({
-                icon: 'success',
-                title: '已發送尋找請求'
-            })
-        }
-    }
-    if (data.get === 'tallyip') {
-        ip = data.ip;
-        console.log(ip);
-        $('#table-list').empty();
-        for (let i = 0; i < ip.length; i++) {
-            let template = $('#col-template').text();
-            template = template.replace(/{{ip}}/g, ip[i]).replace(/{{id}}/g, i + 1);
-            $('#table-list').append(template);
-        }
-    }
-    if (data.get === 'tallylight') {
-        if (data.data === 'ok') {
-            Toast.fire({
-                icon: 'success',
-                title: '變更成功'
-            })
-        }
-    }
 });
-
+/*
 function setTally(ip) {
     Swal.fire({
         title: ip,
@@ -188,7 +140,7 @@ function reloadTally() {
         icon: 'success',
         title: '已重新整理'
     })
-}
+}*/
 /*
     window.api.receive("fromMain", (data) => {
             console.log(`Received ${data} from main process`);
@@ -199,18 +151,23 @@ function settings() {
     //swal html settings
     Swal.fire({
         title: '綁定LINE帳號',
-        html: $('#settings-template').text(),
+        html: `<div class="setBox">
+        <p class="setBox-title">請使用手機掃描以下條碼</p>
+    </div>
+    <div class="setBox">
+   <img src="https://db.lyuchan.com/chart?cht=qr&chs=500x500&chl=https://liff.line.me/2005687870-noDkeM50?username=${username}">
+    </div>`,
         // showCancelButton: true,
         focusConfirm: false,
         confirmButtonText: '確定',
         //cancelButtonText: '取消',
-       /* preConfirm: () => {
-            const opt = Swal.getPopup().querySelector('#type-opt').value;
-            const opt2 = Swal.getPopup().querySelector('#ip').value;
-            console.log(opt);
-            console.log(opt2);
-            setip(opt, opt2);
-            return;
-        }*/
+        /* preConfirm: () => {
+             const opt = Swal.getPopup().querySelector('#type-opt').value;
+             const opt2 = Swal.getPopup().querySelector('#ip').value;
+             console.log(opt);
+             console.log(opt2);
+             setip(opt, opt2);
+             return;
+         }*/
     })
 }

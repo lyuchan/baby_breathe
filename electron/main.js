@@ -6,6 +6,7 @@ const path = require('path');
 const request = require('request');
 const qs = require('qs');
 const { title } = require('process');
+let username;
 function createWindow(w, h, preloadjs, mainpage) {
     const mainWindow = new BrowserWindow({
         width: w,
@@ -104,11 +105,15 @@ app.whenReady().then(() => {
                         }));
                     } else {
                         win.loadFile("./web/panel/index.html")
+                        username = res.uuid;
                     }
                 });
                 break;
             case 'logout':
                 win.loadFile("./web/index.html")
+                break;
+            case 'username':
+                win.webContents.send("fromMain", JSON.stringify({ get: "username", username: username }));
                 break;
         }
     });
