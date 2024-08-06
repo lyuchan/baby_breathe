@@ -66,7 +66,7 @@ const lineuserdb = mysql.createConnection({
     host: 'localhost',
     user: process.env["user"],
     password: process.env["password"],
-    database: 'line_user' // 資料庫名稱
+    database: 'userdata' // 資料庫名稱
 });
 /////////////////////////////////////ws//////////////////////////////////
 wss.on("connection", (ws) => {
@@ -457,7 +457,7 @@ function handleEvent(event) {
                         console.log(profile.userId);
                         console.log(profile.pictureUrl); // 顯示使用者大頭照網址
                         console.log(profile.statusMessage) // 使用者自介內容
-                        lineuserdb.query(`INSERT INTO line_user (uuid, name, photo_url) VALUES (a, b, c);`, (err, result) => {
+                        lineuserdb.query(`INSERT INTO line_user (uuid, name, photo_url) VALUES ('${event.source.userId}', '${profile.displayName}', '${profile.pictureUrl}');`, (err, result) => {
                             if (err) {
                                 console.log("inserterr:", err);
                                 return;
