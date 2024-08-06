@@ -432,7 +432,7 @@ app.get('/alertimg', (req, res) => {
 });
 
 function handleEvent(event) {
-    console.log(event.source.userId)
+    //console.log(event.source.userId)
     if (event.source.userId != undefined) {
         userdb.query(`SELECT * FROM line_user WHERE uuid='${event.source.userId}';`, (err, result) => {
             if (err) {
@@ -441,10 +441,10 @@ function handleEvent(event) {
             if (result.length <= 0) {
                 client.getProfile(event.source.userId)
                     .then((profile) => {
-                        console.log(profile.displayName); //顯示使用者名字
-                        console.log(profile.userId);
-                        console.log(profile.pictureUrl); // 顯示使用者大頭照網址
-                        console.log(profile.statusMessage) // 使用者自介內容
+                        //console.log(profile.displayName); //顯示使用者名字
+                        //console.log(profile.userId);
+                        //console.log(profile.pictureUrl); // 顯示使用者大頭照網址
+                        //console.log(profile.statusMessage) // 使用者自介內容
                         userdb.query(`INSERT INTO line_user (uuid, name, photo_url) VALUES ('${event.source.userId}', '${profile.displayName}', '${profile.pictureUrl}');`, (err, result) => {
                             if (err) {
                                 console.log("inserterr:", err);
