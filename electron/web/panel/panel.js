@@ -155,7 +155,7 @@ function settings() {
         <p class="setBox-title">請使用手機掃描以下條碼</p>
     </div>
     <div class="setBox">
-   <img src="https://db.lyuchan.com/chart?cht=qr&chs=500x500&chl=https://liff.line.me/2005687870-noDkeM50?username=${username}">
+   <img src="https://db.lyuchan.com/chart?cht=qr&chs=250x250&chl=https://liff.line.me/2005687870-noDkeM50?username=${username}">
     </div>`,
         // showCancelButton: true,
         focusConfirm: false,

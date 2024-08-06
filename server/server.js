@@ -431,6 +431,7 @@ app.get('/alertimg', (req, res) => {
 });
 
 function handleEvent(event) {
+    console.log(event)
     if (event.type == 'postback') {
         let resdata = JSON.parse(event.postback.data)
         switch (resdata.get) {
