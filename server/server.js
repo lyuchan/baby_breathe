@@ -200,7 +200,7 @@ userdb.connect((err) => {
                 res.status(500).json({ error: 'Database query error' });
                 return;
             }
-            if (results.length >= 0) {
+            if (results.length > 0) {
                 res.status(200).json({ success: true });
             } else {
                 res.status(200).json({ error: 'not_found' });
