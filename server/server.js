@@ -62,6 +62,12 @@ const userdb = mysql.createConnection({
     password: process.env["password"],
     database: 'userdata' // 資料庫名稱
 });
+const lineuserdb = mysql.createConnection({
+    host: 'localhost',
+    user: process.env["user"],
+    password: process.env["password"],
+    database: 'line_user' // 資料庫名稱
+});
 /////////////////////////////////////ws//////////////////////////////////
 wss.on("connection", (ws) => {
 
@@ -174,6 +180,13 @@ datadb.connect((err) => {
 
 
 });
+lineuserdb.connect((err) => {
+    if (err) {
+        console.error('無法連線到lineuserdb', err);
+        return;
+    }
+    console.log('已成功連線到lineuserdb');
+})
 userdb.connect((err) => {
     if (err) {
         console.error('無法連線到userdb', err);
@@ -431,7 +444,34 @@ app.get('/alertimg', (req, res) => {
 });
 
 function handleEvent(event) {
-    console.log(event)
+    console.log(event.source.userId)
+    if (event.source.userId != undefined) {
+        lineuserdb.query(`SELECT * FROM line_user WHERE uuid='${event.source.userId}';`, (err, result) => {
+            if (err) {
+                return;
+            }
+            if (result.length <= 0) {
+                client.getProfile(event.source.userId)
+                    .then((profile) => {
+                        console.log(profile.displayName); //顯示使用者名字
+                        console.log(profile.userId);
+                        console.log(profile.pictureUrl); // 顯示使用者大頭照網址
+                        console.log(profile.statusMessage) // 使用者自介內容
+                        lineuserdb.query(`INSERT INTO line_user (uuid, name, photo_url) VALUES (a, b, c);`, (err, result) => {
+                            if (err) {
+                                console.log("inserterr:", err);
+                                return;
+                            }
+                        });
+                    })
+                    .catch((err) => {
+                        // error handling
+                    });
+
+            }
+        });
+
+    }
     if (event.type == 'postback') {
         let resdata = JSON.parse(event.postback.data)
         switch (resdata.get) {
