@@ -205,7 +205,17 @@ userdb.connect((err) => {
             }
         });
     })
-
+    app.post('/cont_line2user', function (req, res) {
+        let { uuid, username } = req.body;
+        const query = `UPDATE user SET uuid='${uuid}' WHERE user.username='${username}';`;
+        userdb.query(query, (err, result) => {
+            if (err) {
+                res.status(500).json({ error: err.code });
+                return;
+            }
+            res.json({ success: true });
+        });
+    })
     app.post('/add_device', function (req, res) {
         let { uuid, device, name } = req.body;
         const query = 'INSERT INTO linebot_device (uuid,device,name) VALUES ( ?, ?, ?)';

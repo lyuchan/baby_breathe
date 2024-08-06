@@ -101,7 +101,7 @@
     <script>
 
         var params = new URLSearchParams(new URL(window.location.href).search);
-        let device_id = params.get('device_id');
+        let device_id = params.get('username');
 
         var userId = '';
         var result = {};
@@ -154,36 +154,21 @@
 
             const formData = new URLSearchParams();
             formData.append('uuid', userId);
-            formData.append('device', device_id);
-            Swal.fire({
-                title: "請輸入小孩姓名",
-                input: "text",
-                inputAttributes: {
-                    autocapitalize: "off"
+            formData.append('username', device_id);
+            fetch('/cont_line2user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                confirmButtonText: "確認",
-                preConfirm: (name) => {
-                    if (name == "") {
-                        Swal.fire("名稱不得為空", "", "error")
-                    } else {
-                        formData.append('name', name);
-                        fetch('/add_device', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded'
-                            },
-                            body: formData.toString()
-                        }).then(() => {
-                            Swal.fire("已綁定", "", "success").then(() => {
-                                liff.closeWindow();
-                            });
-                        })
-                            .catch(error => {
-
-                            })
-                    }
-                }
+                body: formData.toString()
+            }).then(() => {
+                Swal.fire("已綁定", "", "success").then(() => {
+                    liff.closeWindow();
+                });
             })
+                .catch(error => {
+
+                })
         });
         document.getElementById("device_id_error").addEventListener("click", () => {
 
