@@ -470,7 +470,7 @@ app.get('/alertimg', (req, res) => {
 function handleEvent(event) {
     //console.log(event.source.userId)
     if (event.source.userId != undefined) {
-        userdb.query(`SELECT * FROM line_user WHERE uuid='${event.source.userId}';`, (err, result) => {
+        userdb.query(`SELECT * FROM line_user WHERE uuid='${(event.source.userId).toString()}';`, (err, result) => {
             if (err) {
                 return;
             }
