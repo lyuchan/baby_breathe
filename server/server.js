@@ -60,7 +60,8 @@ const userdb = mysql.createConnection({
     host: 'localhost',
     user: process.env["user"],
     password: process.env["password"],
-    database: 'userdata' // 資料庫名稱
+    database: 'userdata', // 資料庫名稱
+    charset: 'utf8mb4'
 });
 
 /////////////////////////////////////ws//////////////////////////////////
