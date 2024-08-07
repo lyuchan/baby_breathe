@@ -120,6 +120,10 @@ async def websocket_client():
                     # 偵測影像中的人臉
                     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
                     
+                    # 在影像上繪製人臉方框
+                    for (x, y, w, h) in faces:
+                        cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+                    
                     # 保存影像
                     cv2.imwrite('img.png', frame)
                     
@@ -168,6 +172,10 @@ async def main():
         # 偵測影像中的人臉
         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
         
+        # 在影像上繪製人臉方框
+        for (x, y, w, h) in faces:
+            cv2.rectangle(small_frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+        
         if len(faces) > 0:
             last_face_time = time.time()  # 更新最後偵測到人臉的時間
         
@@ -184,10 +192,9 @@ async def main():
                     print("警報圖片已本地保存為 alert_img.png")
                     
                     # 上傳警報圖片到伺服器
-                    #img_url = upload_image(alert_frame, 'alert_picname', 'alert_replyToken', pushmsg='false')
+                    img_url = upload_image(alert_frame, 'alert_picname', 'alert_replyToken', 'false')
                     
-                   
-                    send_alert("錯誤：未偵測到人臉")
+                    send_alert("錯誤：未偵測到人臉", img_url=img_url)
                     
                     last_alert_time = current_time  # 更新最後發送警報的時間
             
