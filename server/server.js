@@ -482,7 +482,7 @@ function handleEvent(event) {
                         //console.log(profile.userId);
                         //console.log(profile.pictureUrl); // 顯示使用者大頭照網址
                         //console.log(profile.statusMessage) // 使用者自介內容
-                        userdb.query(`INSERT INTO line_user (uuid, name, photo_url) VALUES ('${event.source.userId}', '${profile.displayName}', '${profile.pictureUrl}');`, (err, result) => {
+                        userdb.query(`INSERT INTO line_user (uuid, name, photo_url) VALUES ('${(event.source.userId).toString()}', '${profile.displayName}', '${profile.pictureUrl}');`, (err, result) => {
                             if (err) {
                                 console.log("inserterr:", err);
                                 return;
