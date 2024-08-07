@@ -474,7 +474,7 @@ function handleEvent(event) {
             if (err) {
                 return;
             }
-            if (result.length <= 0) {
+            if (result.length < 0) {
                 client.getProfile(event.source.userId)
                     .then((profile) => {
                         //console.log(profile.displayName); //顯示使用者名字

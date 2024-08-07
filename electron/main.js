@@ -1,12 +1,12 @@
-try {
-    require('electron-reloader')(module, {});
-} catch (_) { }
+//try {
+//  require('electron-reloader')(module, {});
+//} catch (_) { }
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path');
 const request = require('request');
 const qs = require('qs');
 const { title } = require('process');
-let username;
+let userdata = {};
 function createWindow(w, h, preloadjs, mainpage) {
     const mainWindow = new BrowserWindow({
         width: w,
@@ -86,7 +86,6 @@ app.whenReady().then(() => {
                     form: {
                         'username': res.uuid,
                         'password': res.password
-
                     }
                 }, function (error, response) {
                     if (error) {
@@ -98,45 +97,49 @@ app.whenReady().then(() => {
                         return;
                     };
                     console.log(response.body);
+                    userdata.uuid = res.uuid;
+                    request({
+                        'method': 'POST',
+                        'url': 'https://db.lyuchan.com/getuserdata',
+                        'headers': {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        form: {
+                            'username': res.uuid
+                        }
+                    }, function (error, response) {
+                        if (error) {
+                            //error
+                            return;
+                        };
+                        console.log(response.body);
+                        if (JSON.parse(response.body).success == undefined) {
+                            //error
+                            userdata.linename = undefined;
+                            userdata.lineimg = undefined;
+                        } else {
+                            let resuserdata = JSON.parse(response.body)
+                            userdata.linename = resuserdata.data[0].name;
+                            userdata.lineimg = resuserdata.data[0].photo_url;
+                            console.log(userdata)
+                        }
+                    });
+                    win.loadFile("./web/panel/index.html")
                 });
                 break;
             case 'logout':
                 win.loadFile("./web/index.html")
                 break;
-            case 'username':
-                win.webContents.send("fromMain", JSON.stringify({ get: "username", username: username }));
+            case 'contline':
+                if (userdata.linename == undefined) {
+                    win.webContents.send("fromMain", JSON.stringify({ get: "settings", username: userdata.uuid }));
+                } else {
+                    win.webContents.send("fromMain", JSON.stringify({ get: "csettings", userdata: userdata }));
+                }
+
                 break;
             case 'userdata':
-                request({
-                    'method': 'POST',
-                    'url': 'https://db.lyuchan.com/getuserdata',
-                    'headers': {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    form: {
-                        'username': username
-                    }
-                }, function (error, response) {
-                    if (error) {
-                        win.webContents.send("fromMain", JSON.stringify({
-                            get: "popup",
-                            icon: "error",
-                            title: "錯誤，請聯繫開發者"
-                        }));
-                        return;
-                    };
-                    console.log(response.body);
-                    if (JSON.parse(response.body).success == undefined) {
-                        win.webContents.send("fromMain", JSON.stringify({
-                            get: "popup",
-                            icon: "error",
-                            title: "帳號或密碼錯誤"
-                        }));
-                    } else {
-                        win.loadFile("./web/panel/index.html")
-                        username = res.uuid;
-                    }
-                });
+
             //getuserdata
         }
     });
