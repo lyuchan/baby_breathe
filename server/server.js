@@ -474,6 +474,7 @@ function handleEvent(event) {
             if (err) {
                 return;
             }
+            console.log(result.length);
             if (result.length == 0) {
                 client.getProfile(event.source.userId)
                     .then((profile) => {
