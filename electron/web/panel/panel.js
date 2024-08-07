@@ -77,13 +77,19 @@ function csettings(userdata) {
     </div>
     <p class="setBox-title" style="color:#181717;">你已經綁定line帳號了，要重新綁定嗎?</p>
     <p class="setBox-title">${userdata.linename}</p>`,
+        showCancelButton: true,
         focusConfirm: false,
         confirmButtonText: '確定',
+        cancelButtonText: '取消',
+        preConfirm: () => {
+            settings(userdata.uuid);
+            return;
+        }
     })
 }
 function tosettings() {
     data = {
-        get: 'contline',
+        get: 'contline'
     }
     window.api.send("toMain", JSON.stringify(data));
 }

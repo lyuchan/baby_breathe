@@ -370,7 +370,7 @@ app.post('/uploadimg', function (req, res) {
                         previewImageUrl: `https://db.lyuchan.com/img/${token}.png`
                     }]
                 });
-                res.json({ success: true });
+               // res.json({ success: true });
             });
         });
 
@@ -383,7 +383,7 @@ app.post('/uploadimg', function (req, res) {
                 previewImageUrl: `https://db.lyuchan.com/img/${token}.png`
             }],
         });
-        res.json({ success: true });
+       // res.json({ success: true });
     }
 
 

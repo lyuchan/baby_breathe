@@ -98,32 +98,6 @@ app.whenReady().then(() => {
                     };
                     console.log(response.body);
                     userdata.uuid = res.uuid;
-                    request({
-                        'method': 'POST',
-                        'url': 'https://db.lyuchan.com/getuserdata',
-                        'headers': {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        form: {
-                            'username': res.uuid
-                        }
-                    }, function (error, response) {
-                        if (error) {
-                            //error
-                            return;
-                        };
-                        console.log(response.body);
-                        if (JSON.parse(response.body).success == undefined) {
-                            //error
-                            userdata.linename = undefined;
-                            userdata.lineimg = undefined;
-                        } else {
-                            let resuserdata = JSON.parse(response.body)
-                            userdata.linename = resuserdata.data[0].name;
-                            userdata.lineimg = resuserdata.data[0].photo_url;
-                            console.log(userdata)
-                        }
-                    });
                     win.loadFile("./web/panel/index.html")
                 });
                 break;
@@ -131,12 +105,31 @@ app.whenReady().then(() => {
                 win.loadFile("./web/index.html")
                 break;
             case 'contline':
-                if (userdata.linename == undefined) {
-                    win.webContents.send("fromMain", JSON.stringify({ get: "settings", username: userdata.uuid }));
-                } else {
-                    win.webContents.send("fromMain", JSON.stringify({ get: "csettings", userdata: userdata }));
-                }
-
+                request({
+                    'method': 'POST',
+                    'url': 'https://db.lyuchan.com/getuserdata',
+                    'headers': {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    form: {
+                        'username': userdata.uuid
+                    }
+                }, function (error, response) {
+                    if (error) {
+                        //error
+                        return;
+                    };
+                    console.log(response.body);
+                    if (JSON.parse(response.body).success == undefined) {
+                        //error
+                        win.webContents.send("fromMain", JSON.stringify({ get: "settings", username: userdata.uuid }));
+                    } else {
+                        let resuserdata = JSON.parse(response.body)
+                        userdata.linename = resuserdata.data[0].name;
+                        userdata.lineimg = resuserdata.data[0].photo_url;
+                        win.webContents.send("fromMain", JSON.stringify({ get: "csettings", userdata: userdata }));
+                    }
+                });
                 break;
             case 'userdata':
 
