@@ -4,7 +4,7 @@
 #include <ESP8266WebServer.h>
 #include <DNSServer.h>
 #include <Wire.h>
-#include <Adafruit_ADS1015.h>
+#include <Adafruit_ADS1X15.h>
 
 // 初始化ADS1115
 Adafruit_ADS1115 ads;
