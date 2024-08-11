@@ -58,7 +58,7 @@
     <div class=" panel-main">
         <div class="panel-row">
 
-            <p class="text">Tally IP:</p>
+            <p class="text" style="color:black;">我不想寫css<br>我不想寫css</p>
             <!--
             <input id="atemip" class="atemip textbox" type="text" placeholder="ex:192.168.0.255(廣播位置)">
             <button class="btn connect-btn" onclick="atemip();">
@@ -83,8 +83,9 @@
         <div class="tb">
             <table id="control">
                 <tr>
-                    <th>編號</th>
-                    <th>IP</th>
+                    <th>姓名</th>
+                    <th>裝置ID</th>
+                    <th>連線狀態</th>
                     <th>功能</th>
                 </tr>
                 <tbody id="table-list">
@@ -94,41 +95,12 @@
         </div>
     </div>
 </body>
-<script type="text/html" id="selectbox-template">
-    <div class="setBox">
-        <p class="setBox-title">燈號設定</p>
-        <div class="select-box">
-            <select id="opt">
-                <option value="" disabled selected></option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-                <option value="13">13</option>
-                <option value="14">14</option>
-                <option value="15">15</option>
-                <option value="16">16</option>
-                <option value="17">17</option>
-                <option value="18">18</option>
-                <option value="19">19</option>
-                <option value="20">20</option>
-            </select>
-        </div>
-    </div>
-</script>
 
 <script type="text/html" id="col-template">
     <tr>
-        <td>{{id}}</td>
-        <td>{{ip}}</td>
+        <td>{{name}}</td>
+        <td>{{deviceid}}</td>
+        <td>{{ii}}</td>
         <td>
             <button class="btn btn-ctrlfind" onclick="setTally('{{ip}}')">設定</button>
             <button class="btn btn-ctrlfind" onclick="find('{{ip}}')">尋找</button>
@@ -143,6 +115,18 @@
    <img src="https://db.lyuchan.com/chart?cht=qr&chs=500x500&chl=https://liff.line.me/2005687870-mLLOD7wA?device_id=a">
     </div>
    
+</script>
+<script>
+    settb();
+    function settb() {
+        let ip = []
+        $('#table-list').empty();
+        for (let i = 0; i < 10; i++) {
+            let template = $('#col-template').text();
+            template = template.replace(/{{ip}}/g, `baby${i + 1}`).replace(/{{id}}/g, i + 1);
+            $('#table-list').append(template);
+        }
+    }
 </script>
 
 </html>
