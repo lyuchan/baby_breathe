@@ -287,7 +287,7 @@ userdb.connect((err) => {
     })
     app.get('/user_device_list', function (req, res) {
         const { user_id } = req.query;
-        const query = `SELECT device FROM linebot_device WHERE linebot_device.uuid = '${user_id}'`
+        const query = `SELECT * FROM linebot_device WHERE linebot_device.uuid = '${user_id}'`
         userdb.query(query, (err, result) => {
             if (err) {
                 res.status(500).json({ error: err.code });
@@ -370,7 +370,7 @@ app.post('/uploadimg', function (req, res) {
                         previewImageUrl: `https://db.lyuchan.com/img/${token}.png`
                     }]
                 });
-               // res.json({ success: true });
+                // res.json({ success: true });
             });
         });
 
@@ -383,7 +383,7 @@ app.post('/uploadimg', function (req, res) {
                 previewImageUrl: `https://db.lyuchan.com/img/${token}.png`
             }],
         });
-       // res.json({ success: true });
+        // res.json({ success: true });
     }
 
 
