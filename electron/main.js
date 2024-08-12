@@ -19,7 +19,7 @@ function createWindow(w, h, preloadjs, mainpage) {
         }
     })
     mainWindow.loadFile(mainpage)
-    //mainWindow.webContents.openDevTools()//!!!devtools!!!
+    mainWindow.webContents.openDevTools()//!!!devtools!!!
     return mainWindow;
 }
 
