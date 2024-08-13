@@ -256,7 +256,7 @@ userdb.connect((err) => {
     })
     app.post('/add_device', function (req, res) {
         let { uuid, device, name } = req.body;
-        const query = 'INSERT INTO linebot_device (uuid,device,name) VALUES ( ?, ?, ?)';
+        const query = 'INSERT INTO device_line (uuid,device,name) VALUES ( ?, ?, ?)';
         userdb.query(query, [uuid, device, name], (err, result) => {
             if (err) {
                 if (err.code === 'ER_DUP_ENTRY') {
@@ -272,7 +272,7 @@ userdb.connect((err) => {
 
     app.post('/del_device', function (req, res) {
         let { device } = req.body;
-        const query = `DELETE FROM linebot_device WHERE linebot_device.device = '${device}'`
+        const query = `DELETE FROM device_line WHERE device_line.device = '${device}'`
         userdb.query(query, (err, result) => {
             if (err) {
                 if (err.code === 'ER_DUP_ENTRY') {
@@ -287,7 +287,7 @@ userdb.connect((err) => {
     })
     app.get('/user_device_list', function (req, res) {
         const { user_id } = req.query;
-        const query = `SELECT * FROM linebot_device WHERE linebot_device.uuid = '${user_id}'`
+        const query = `SELECT * FROM device_line WHERE device_line.uuid = '${user_id}'`
         userdb.query(query, (err, result) => {
             if (err) {
                 res.status(500).json({ error: err.code });
@@ -298,7 +298,7 @@ userdb.connect((err) => {
     })
     app.get('/device_user_list', function (req, res) {
         const { device_id } = req.query;
-        const query = `SELECT uuid FROM linebot_device WHERE linebot_device.device = '${device_id}'`
+        const query = `SELECT uuid FROM device_line WHERE device_line.device = '${device_id}'`
         userdb.query(query, (err, result) => {
             if (err) {
                 res.status(500).json({ error: err.code });
@@ -309,7 +309,7 @@ userdb.connect((err) => {
     })
     app.get('/device_ping', function (req, res) {
         const { device_id } = req.query;
-        const query = `UPDATE linebot_device SET ping = CURRENT_TIMESTAMP() WHERE linebot_device.device = '${device_id}';`
+        const query = `UPDATE device_line SET ping = CURRENT_TIMESTAMP() WHERE device_line.device = '${device_id}';`
         userdb.query(query, (err, result) => {
             if (err) {
                 res.status(500).json({ error: err.code });
@@ -320,7 +320,7 @@ userdb.connect((err) => {
     })
     app.get('/cam_ping', function (req, res) {
         const { device_id } = req.query;
-        const query = `UPDATE linebot_device SET cam_ping = CURRENT_TIMESTAMP() WHERE linebot_device.device = '${device_id}';`
+        const query = `UPDATE device_line SET cam_ping = CURRENT_TIMESTAMP() WHERE device_line.device = '${device_id}';`
         userdb.query(query, (err, result) => {
             if (err) {
                 res.status(500).json({ error: err.code });
@@ -350,7 +350,7 @@ app.post('/uploadimg', function (req, res) {
     fs.writeFileSync(`./web/img/${filename}`, data, 'base64');
     res.send(encodeURI(filename));
     if (pushmsg == 'true') {
-        const query = `SELECT * FROM linebot_device WHERE linebot_device.device='${replyToken}';`
+        const query = `SELECT * FROM device_line WHERE device_line.device='${replyToken}';`
         userdb.query(query, (err, result) => {
             if (err) {
                 res.status(500).json({ error: err.code });
@@ -417,7 +417,7 @@ app.get('/linepushmsg', (req, res) => {
 
 app.get('/alert', (req, res) => {
     const { device, alertText } = req.query;
-    const query = `SELECT * FROM linebot_device WHERE linebot_device.device='${device}';`
+    const query = `SELECT * FROM device_line WHERE device_line.device='${device}';`
     userdb.query(query, (err, result) => {
         if (err) {
             res.status(500).json({ error: err.code });
@@ -442,7 +442,7 @@ app.get('/alert', (req, res) => {
 });
 app.get('/alertimg', (req, res) => {
     const { device, alertText } = req.query;
-    const query = `SELECT * FROM linebot_device WHERE linebot_device.device='${device}';`
+    const query = `SELECT * FROM device_line WHERE device_line.device='${device}';`
     userdb.query(query, (err, result) => {
         if (err) {
             res.status(500).json({ error: err.code });
@@ -502,7 +502,7 @@ function handleEvent(event) {
         let resdata = JSON.parse(event.postback.data)
         switch (resdata.get) {
             case 'delete_device':
-                const query = `DELETE FROM linebot_device WHERE linebot_device.device = '${resdata.device_id}' AND linebot_device.uuid = '${resdata.uuid}' AND linebot_device.name = '${resdata.name}'`
+                const query = `DELETE FROM device_line WHERE device_line.device = '${resdata.device_id}' AND device_line.uuid = '${resdata.uuid}' AND device_line.name = '${resdata.name}'`
                 userdb.query(query, (err, result) => {
                     if (err) {
                         return;
@@ -666,7 +666,7 @@ function handleEvent(event) {
                     "align": "center"
                 }]
                 let device_count = 0;
-                userdb.query(`SELECT * FROM linebot_device WHERE linebot_device.uuid = '${event.source.userId}'`, (err, result) => {
+                userdb.query(`SELECT * FROM device_line WHERE device_line.uuid = '${event.source.userId}'`, (err, result) => {
                     if (err) {
                         console.error(err);
                         return;
@@ -796,7 +796,7 @@ function handleEvent(event) {
                     "align": "center"
                 }]
                 let device_counts = 0;
-                userdb.query(`SELECT * FROM linebot_device WHERE linebot_device.uuid = '${event.source.userId}'`, (err, result) => {
+                userdb.query(`SELECT * FROM device_line WHERE device_line.uuid = '${event.source.userId}'`, (err, result) => {
                     if (err) {
                         console.error(err);
                         return;
@@ -915,7 +915,7 @@ function handleEvent(event) {
                 break;
             case '裝置管理':
                 let echo = []
-                const query = `SELECT * FROM linebot_device WHERE linebot_device.uuid = '${event.source.userId}'`
+                const query = `SELECT * FROM device_line WHERE device_line.uuid = '${event.source.userId}'`
                 userdb.query(query, (err, result) => {
                     if (err) {
                         console.error(err);

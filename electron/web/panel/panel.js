@@ -93,3 +93,9 @@ function tosettings() {
     }
     window.api.send("toMain", JSON.stringify(data));
 }
+function settingdevice(deviceid) {
+    console.log(deviceid);
+}
+function showinfo(deviceid) {
+    console.log(deviceid);
+}
