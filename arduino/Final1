@@ -1,0 +1,163 @@
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
+#include <ESP8266WebServer.h>
+#include <WiFiManager.h>
+#include <Adafruit_ADS1X15.h>
+
+// 初始化ADS1115
+Adafruit_ADS1115 ads;
+
+// 定義閾值和周期
+const int breathThreshold = 2; // 呼吸偵測閾值
+const unsigned long sampleInterval = 1000; // 每1秒取樣一次
+const unsigned long measurementPeriod = 60000; // 測量周期為1分鐘（60000毫秒）
+const unsigned long warningPeriod = 10000; // 10秒警告周期
+const unsigned long alertPeriod = 30000; // 30秒警告周期
+
+String token = "baby10"; // 用戶輸入的token
+
+void setup() {
+  Serial.begin(115200); // 初始化串口
+  Serial.println("ESP8266啟動");
+
+  // 初始化ADS1115
+  ads.begin();
+
+  // 連接WiFi
+  WiFiManager wifiManager;
+  if (!wifiManager.autoConnect("ESP_Baby")) {
+    Serial.println("無法連接WiFi");
+    ESP.restart(); // 重啟ESP8266
+  }
+
+  /*/ 提示用戶輸入token
+  Serial.println("請輸入token:");
+  while (token.length() == 0) {
+    if (Serial.available() > 0) {
+      token = Serial.readStringUntil('\n');
+      token.trim(); // 去除前後空白字符
+    }
+  }
+
+  Serial.print("已輸入token: ");
+  Serial.println(token);*/
+}
+
+void loop() {
+  unsigned long startTime = millis(); // 記錄開始時間
+  unsigned long lastBreathTime = millis(); // 記錄最後一次呼吸時間
+  int breathCount = 0; // 呼吸次數計數
+  int previousValueX = 0, previousValueY = 0, previousValueZ = 0;
+  int currentValueX = 0, currentValueY = 0, currentValueZ = 0;
+  bool upDetected = false; // 偵測是否翻身
+  bool alertTriggered = false; // 是否觸發30秒無呼吸警告
+
+  // 在測量周期內進行取樣
+  while (millis() - startTime < measurementPeriod) {
+    // 讀取當前的加速度計值
+    previousValueX = currentValueX;
+    previousValueY = currentValueY;
+    previousValueZ = currentValueZ;
+    currentValueX = ads.readADC_SingleEnded(0);
+    currentValueY = ads.readADC_SingleEnded(1);
+    currentValueZ = ads.readADC_SingleEnded(2);
+
+    int differenceX = abs(currentValueX - previousValueX);
+
+    // 偵測翻身
+    if (currentValueY < 320 || currentValueZ < 390) {
+      Serial.println("警告：偵測到翻身！");
+      upDetected = true;
+    }
+
+    // 偵測呼吸
+    if (differenceX > breathThreshold) {
+      breathCount++;
+      lastBreathTime = millis();
+    }
+
+    // 偵測是否超過警告周期沒有偵測到呼吸
+    if (millis() - lastBreathTime > warningPeriod) {
+      Serial.println("警告：沒有偵測到呼吸");
+      lastBreathTime = millis();
+    }
+
+    // 檢查是否有30秒以上沒有呼吸
+    if (millis() - lastBreathTime > alertPeriod && !alertTriggered) {
+      Serial.println("警告：30秒無呼吸，發送警告");
+
+      // 發送警告HTTP請求
+      if (WiFi.status() == WL_CONNECTED) {
+        HTTPClient http;
+        String alertUrl = "https://db.lyuchan.com/alert?device=baby10&alertText=呼吸異常警告";
+        Serial.print("警告請求URL: ");
+        Serial.println(alertUrl);
+
+        WiFiClient client;
+        http.begin(client, alertUrl);
+        int httpResponseCode = http.GET();
+
+        if (httpResponseCode > 0) {
+          Serial.print("HTTP 回應碼: ");
+          Serial.println(httpResponseCode);
+          Serial.println(http.getString());
+        } else {
+          Serial.print("HTTP 請求失敗, 錯誤: ");
+          Serial.print(httpResponseCode);
+          Serial.println(http.errorToString(httpResponseCode).c_str());
+        }
+        http.end();
+      } else {
+        Serial.println("WiFi 未連接");
+      }
+
+      alertTriggered = true; // 防止多次觸發
+    }
+
+    delay(sampleInterval); // 等待下一次取樣
+  }
+
+  // 顯示呼吸次數
+  Serial.print("呼吸次數: ");
+  Serial.println(breathCount);
+
+  // 根據呼吸次數給出判斷
+  if (breathCount < 12) {
+    Serial.println("呼吸過慢");
+  } else if (breathCount > 20) {
+    Serial.println("呼吸過快");
+  } else {
+    Serial.println("呼吸正常");
+  }
+
+  // 檢查WiFi是否連接
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+    
+    String url1 = "http://db.lyuchan.com/api/?freq=" + String(breathCount) + "&up=" + String(upDetected) + "&token=" + token;
+
+    Serial.print("請求URL: ");
+    Serial.println(url1);
+
+    // 發送HTTP GET請求
+    WiFiClient client;
+    http.begin(client, url1);
+    int httpResponseCode = http.GET();
+
+    // 打印HTTP響應碼
+    if (httpResponseCode > 0) {
+      Serial.print("HTTP 回應碼: ");
+      Serial.println(httpResponseCode);
+      Serial.println(http.getString());
+    } else {
+      Serial.print("HTTP 請求失敗, 錯誤: ");
+      Serial.print(httpResponseCode);
+      Serial.println(http.errorToString(httpResponseCode).c_str());
+    }
+    http.end(); // 結束HTTP連接
+  } else {
+    Serial.println("WiFi 未連接");
+  }
+
+  delay(5000); // 延遲5秒後進行下一次測量
+}
