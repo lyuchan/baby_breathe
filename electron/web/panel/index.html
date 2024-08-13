@@ -110,39 +110,41 @@
 
 <script>
 
+    setTimeout(() => {
+        $.ajax({
+            "url": `https://db.lyuchan.com/user_device_list?user_id=${userdata.lineuuid}`,
+            "method": "GET",
+            "timeout": 0,
+        }).done(function (response) {
+            $('#table-list').empty();
 
-    $.ajax({
-        "url": "https://db.lyuchan.com/user_device_list?user_id=U8888abcabcbac69dd8a7b580f1d433e0",
-        "method": "GET",
-        "timeout": 0,
-    }).done(function (response) {
-        $('#table-list').empty();
+            for (let i = 0; i < response.data.length; i++) {
+                let sping = ''
+                let cping = ''
+                if (((new Date() - new Date(response.data[i].ping)) / 1000) > 10) {
+                    sping = "感測器斷線 🔴\n"
+                } else {
+                    sping = "感測器在線 🟢\n"
+                }
+                if (((new Date() - new Date(response.data[i].cam_ping)) / 1000) > 10) {
+                    cping = "攝影機斷線 🔴"
+                } else {
+                    cping = "攝影機在線 🟢"
+                }
+                let template = $('#col-template').text();
+                template = template.replace(/{{deviceid}}/g, `${response.data[i].device}`).replace(/{{name}}/g, `${response.data[i].name}`).replace(/{{ii}}/g, `${sping}<br>${cping}`);
+                $('#table-list').append(template);
+            }
+        });
 
-        for (let i = 0; i < response.data.length; i++) {
-            let sping = ''
-            let cping = ''
-            if (((new Date() - new Date(response.data[i].ping)) / 1000) > 10) {
-                sping = "感測器斷線 🔴\n"
-            } else {
-                sping = "感測器在線 🟢\n"
-            }
-            if (((new Date() - new Date(response.data[i].cam_ping)) / 1000) > 10) {
-                cping = "攝影機斷線 🔴"
-            } else {
-                cping = "攝影機在線 🟢"
-            }
-            let template = $('#col-template').text();
-            template = template.replace(/{{deviceid}}/g, `${response.data[i].device}`).replace(/{{name}}/g, `${response.data[i].name}`).replace(/{{ii}}/g, `${sping}<br>${cping}`);
-            $('#table-list').append(template);
-        }
-    });
+    }, 10);
 
 
     setInterval(() => {
         {
 
             $.ajax({
-                "url": "https://db.lyuchan.com/user_device_list?user_id=U8888abcabcbac69dd8a7b580f1d433e0",
+                "url": `https://db.lyuchan.com/user_device_list?user_id=${userdata.lineuuid}`,
                 "method": "GET",
                 "timeout": 0,
             }).done(function (response) {

@@ -1,9 +1,15 @@
 
 
-window.api.send("toMain", JSON.stringify({ get: 'username', }));
 
-//let username;
 
+
+let lineuuid_timer = setInterval(() => {
+    window.api.send("toMain", JSON.stringify({ get: 'userdata', }));
+    if (userdata.lineuuid != null) {
+        clearInterval(lineuuid_timer)
+    }
+}, 1000);
+let userdata = {};
 const Toast = Swal.mixin({
     toast: true,
     position: 'bottom-right',
@@ -43,9 +49,13 @@ window.api.receive("fromMain", (event) => {
             settings(data.username);
             break;
         case 'csettings':
+            userdata = data.userdata;
             csettings(data.userdata);
             break;
-
+        case 'userdata':
+            userdata = data.userdata;
+            console.log(userdata)
+            break;
     }
 
 });

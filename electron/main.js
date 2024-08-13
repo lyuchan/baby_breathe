@@ -7,24 +7,37 @@ const request = require('request');
 const qs = require('qs');
 const { title } = require('process');
 let userdata = {};
+let devtools = true;
 function createWindow(w, h, preloadjs, mainpage) {
-    const mainWindow = new BrowserWindow({
-        width: w,
-        height: h,
-        //frame: false,          // 標題列不顯示
-        //transparent: true,     // 背景透明
-        autoHideMenuBar: true,
-        webPreferences: {
-            preload: path.join(__dirname, preloadjs)
-        }
-    })
-    mainWindow.loadFile(mainpage)
-    mainWindow.webContents.openDevTools()//!!!devtools!!!
-    return mainWindow;
+    if (devtools) {
+        const mainWindow = new BrowserWindow({
+            width: w + 350,
+            height: h,
+            autoHideMenuBar: true,
+            webPreferences: {
+                preload: path.join(__dirname, preloadjs)
+            }
+        })
+        mainWindow.loadFile(mainpage)
+        mainWindow.webContents.openDevTools()//!!!devtools!!!
+        return mainWindow;
+    } else {
+        const mainWindow = new BrowserWindow({
+            width: w,
+            height: h,
+            autoHideMenuBar: true,
+            webPreferences: {
+                preload: path.join(__dirname, preloadjs)
+            }
+        })
+        mainWindow.loadFile(mainpage)
+        return mainWindow;
+    }
+
 }
 
 app.whenReady().then(() => {
-    const win = createWindow(600, 900, 'preload.js', './web/index.html');
+    const win = createWindow(600, 900, 'preload.js', './web/index.html');//600x900
     ipcMain.on("toMain", (event, args) => {
         //tomain
         let res = JSON.parse(args);
@@ -98,7 +111,7 @@ app.whenReady().then(() => {
                     };
                     console.log(response.body);
                     userdata.uuid = res.uuid;
-                    
+                    userdata.lineuuid = JSON.parse(response.body).uuid
                     win.loadFile("./web/panel/index.html")
                 });
                 break;
@@ -126,6 +139,7 @@ app.whenReady().then(() => {
                         win.webContents.send("fromMain", JSON.stringify({ get: "settings", username: userdata.uuid }));
                     } else {
                         let resuserdata = JSON.parse(response.body)
+                        userdata.lineuuid = resuserdata.data[0].uuid
                         userdata.linename = resuserdata.data[0].name;
                         userdata.lineimg = resuserdata.data[0].photo_url;
                         win.webContents.send("fromMain", JSON.stringify({ get: "csettings", userdata: userdata }));
@@ -133,6 +147,33 @@ app.whenReady().then(() => {
                 });
                 break;
             case 'userdata':
+                request({
+                    'method': 'POST',
+                    'url': 'https://db.lyuchan.com/getuserdata',
+                    'headers': {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    form: {
+                        'username': userdata.uuid
+                    }
+                }, function (error, response) {
+                    if (error) {
+                        //error
+                        return;
+                    };
+                    console.log(response.body);
+                    if (JSON.parse(response.body).success == undefined) {
+                        //error
+                        //win.webContents.send("fromMain", JSON.stringify({ get: "settings", username: userdata.uuid }));
+                    } else {
+                        let resuserdata = JSON.parse(response.body)
+                        console.log(resuserdata)
+                        userdata.lineuuid = resuserdata.data[0].uuid
+                        userdata.linename = resuserdata.data[0].name;
+                        userdata.lineimg = resuserdata.data[0].photo_url;
+                        win.webContents.send("fromMain", JSON.stringify({ get: "userdata", userdata: userdata }));
+                    }
+                });
 
             //getuserdata
         }
