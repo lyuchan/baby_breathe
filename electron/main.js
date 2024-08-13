@@ -98,6 +98,7 @@ app.whenReady().then(() => {
                     };
                     console.log(response.body);
                     userdata.uuid = res.uuid;
+                    
                     win.loadFile("./web/panel/index.html")
                 });
                 break;

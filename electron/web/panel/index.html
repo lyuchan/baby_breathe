@@ -107,23 +107,15 @@
         </td>
     </tr>
 </script>
-<script type="text/html" id="settings-template">
-    <div class="setBox">
-        <p class="setBox-title">請使用手機掃描以下條碼</p>
-    </div>
-    <div class="setBox">
-   <img src="https://db.lyuchan.com/chart?cht=qr&chs=500x500&chl=https://liff.line.me/2005687870-mLLOD7wA?device_id=a">
-    </div>
-   
-</script>
+
 <script>
 
-    var settings = {
+
+    $.ajax({
         "url": "https://db.lyuchan.com/user_device_list?user_id=U8888abcabcbac69dd8a7b580f1d433e0",
         "method": "GET",
         "timeout": 0,
-    };
-    $.ajax(settings).done(function (response) {
+    }).done(function (response) {
         $('#table-list').empty();
 
         for (let i = 0; i < response.data.length; i++) {
@@ -148,12 +140,12 @@
 
     setInterval(() => {
         {
-            var settings = {
+
+            $.ajax({
                 "url": "https://db.lyuchan.com/user_device_list?user_id=U8888abcabcbac69dd8a7b580f1d433e0",
                 "method": "GET",
                 "timeout": 0,
-            };
-            $.ajax(settings).done(function (response) {
+            }).done(function (response) {
                 $('#table-list').empty();
 
                 for (let i = 0; i < response.data.length; i++) {

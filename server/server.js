@@ -202,7 +202,8 @@ userdb.connect((err) => {
                 return;
             }
             if (results.length > 0) {
-                res.status(200).json({ success: true });
+
+                res.status(200).json({ success: true, uuid: results[0].uuid });
             } else {
                 res.status(200).json({ error: 'not_found' });
             }
