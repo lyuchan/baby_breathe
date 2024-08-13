@@ -29,18 +29,6 @@ void setup() {
     Serial.println("無法連接WiFi");
     ESP.restart(); // 重啟ESP8266
   }
-
-  /*/ 提示用戶輸入token
-  Serial.println("請輸入token:");
-  while (token.length() == 0) {
-    if (Serial.available() > 0) {
-      token = Serial.readStringUntil('\n');
-      token.trim(); // 去除前後空白字符
-    }
-  }
-
-  Serial.print("已輸入token: ");
-  Serial.println(token);*/
 }
 
 void loop() {
@@ -89,7 +77,7 @@ void loop() {
       // 發送警告HTTP請求
       if (WiFi.status() == WL_CONNECTED) {
         HTTPClient http;
-        String alertUrl = "https://db.lyuchan.com/alert?device=baby10&alertText=呼吸異常警告";
+        String alertUrl = "http://db.lyuchan.com/alert?device=baby10&alertText=呼吸異常警告";
         Serial.print("警告請求URL: ");
         Serial.println(alertUrl);
 
