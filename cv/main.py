@@ -13,12 +13,12 @@ load_dotenv()
 serverIP = os.getenv("SERVER_IP")
 serverPort = os.getenv("SERVER_PORT")
 
-ping_url = f"https://db.lyuchan.com/cam_ping?device_id=test1"
+ping_url = f"https://db.lyuchan.com/cam_ping?device_id=demobaby1"
 alert_url = "https://db.lyuchan.com/alertimg"
-device_id = "test1"
+device_id = "demobaby1"
 
 # 初始化攝影機
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(8)
 
 # 設定攝影機解析度為1280x720
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
@@ -106,8 +106,9 @@ async def websocket_client():
         while True:
             try:
                 message = await websocket.recv()
+                print(message)
                 data = json.loads(message)
-                if data.get('device') == "test1":
+                if data.get('device') == "demobaby1":
                     # 捕獲當前攝影機畫面
                     ret, frame = cap.read()
                     if not ret:

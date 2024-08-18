@@ -7,7 +7,7 @@ const request = require('request');
 const qs = require('qs');
 const { title } = require('process');
 let userdata = {};
-let devtools = true;
+let devtools = false;
 function createWindow(w, h, preloadjs, mainpage) {
     if (devtools) {
         const mainWindow = new BrowserWindow({
@@ -38,6 +38,7 @@ function createWindow(w, h, preloadjs, mainpage) {
 
 app.whenReady().then(() => {
     const win = createWindow(600, 900, 'preload.js', './web/index.html');//600x900
+    const win2 = createWindow(1920, 1080, 'preload.js', './web/display/index.html');//600x900
     ipcMain.on("toMain", (event, args) => {
         //tomain
         let res = JSON.parse(args);

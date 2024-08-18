@@ -388,3 +388,35 @@ tr:last-child td:last-child {
     width: 40px;
     height: 40px;
 }
+
+.windowsbutton {
+    background-color: #ffffff;
+    color: #000000;
+    width: 160px;
+    height: 90px;
+    font-size: 80px;
+}
+
+.windowsbutton:hover {
+    background-color: #a0a0a0;
+    color: #000000;
+    width: 160px;
+    height: 90px;
+    font-size: 80px;
+}
+
+.windowsbuttonx {
+    background-color: #fff1f1;
+    color: #000000;
+    width: 160px;
+    height: 90px;
+    font-size: 80px;
+}
+
+.windowsbuttonx:hover {
+    background-color: #ff7e7e;
+    color: #000000;
+    width: 160px;
+    height: 90px;
+    font-size: 80px;
+}

@@ -108,4 +108,28 @@ function settingdevice(deviceid) {
 }
 function showinfo(deviceid) {
     console.log(deviceid);
+    Swal.fire({
+        title: '查看裝置',
+        html: `<div class="setBox">
+        <p class="setBox-title">請選擇視圖放置位置</p>
+       
+    </div>
+     <p class="setBox-title" style="color:#181717;">你已經綁定line帳號了，要重新綁定嗎?</p>
+    <div class="setBox">
+    <button class="windowsbutton">1</button><button class="windowsbutton">2</button><button class="windowsbutton">3</button>
+    </div>
+     <div class="setBox">
+    <button class="windowsbutton">4</button><button class="windowsbutton">5</button><button class="windowsbutton">6</button>
+    </div><div class="setBox">
+    <button class="windowsbutton">7</button><button class="windowsbutton">8</button><button class="windowsbuttonx"></button>
+    </div>   `,
+        showCancelButton: true,
+        focusConfirm: false,
+        confirmButtonText: '確定',
+        cancelButtonText: '取消',
+        preConfirm: () => {
+            settings(userdata.uuid);
+            return;
+        }
+    })
 }
