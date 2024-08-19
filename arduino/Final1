@@ -8,7 +8,7 @@
 Adafruit_ADS1115 ads;
 
 // 定義閾值和周期
-const int breathThreshold = 2; // 呼吸偵測閾值
+const int breathThreshold = 8200; // 呼吸偵測閾值
 const unsigned long sampleInterval = 1000; // 每1秒取樣一次
 const unsigned long measurementPeriod = 60000; // 測量周期為1分鐘（60000毫秒）
 const unsigned long warningPeriod = 10000; // 10秒警告周期
@@ -29,9 +29,14 @@ void setup() {
     Serial.println("無法連接WiFi");
     ESP.restart(); // 重啟ESP8266
   }
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop() {
+  digitalWrite(LED_BUILTIN, HIGH);  //LED確認裝置是否開啟
+  delay(1000);                      
+  digitalWrite(LED_BUILTIN, LOW);   
+  delay(1000);    
   unsigned long startTime = millis(); // 記錄開始時間
   unsigned long lastBreathTime = millis(); // 記錄最後一次呼吸時間
   int breathCount = 0; // 呼吸次數計數
@@ -49,11 +54,17 @@ void loop() {
     currentValueX = ads.readADC_SingleEnded(0);
     currentValueY = ads.readADC_SingleEnded(1);
     currentValueZ = ads.readADC_SingleEnded(2);
+    /*Serial.println("X=");  //協助確認當前讀值
+    Serial.println(currentValueX);
+    Serial.println("Y=");
+    Serial.println(currentValueY);
+    Serial.println("Z=");
+    Serial.println(currentValueZ);*/
 
     int differenceX = abs(currentValueX - previousValueX);
 
     // 偵測翻身
-    if (currentValueY < 320 || currentValueZ < 390) {
+    if (currentValueY < 8000 || currentValueZ < 10000) {
       Serial.println("警告：偵測到翻身！");
       upDetected = true;
     }
@@ -63,23 +74,29 @@ void loop() {
       breathCount++;
       lastBreathTime = millis();
     }
-
+    else {
+      Serial.println("警告：沒有偵測到呼吸");
+    }
+   
     // 偵測是否超過警告周期沒有偵測到呼吸
     if (millis() - lastBreathTime > warningPeriod) {
       Serial.println("警告：沒有偵測到呼吸");
+      
       lastBreathTime = millis();
     }
 
     // 檢查是否有30秒以上沒有呼吸
-    if (millis() - lastBreathTime > alertPeriod && !alertTriggered) {
+    if (millis() - lastBreathTime > alertPeriod && alertTriggered == false) {
       Serial.println("警告：30秒無呼吸，發送警告");
 
       // 發送警告HTTP請求
       if (WiFi.status() == WL_CONNECTED) {
         HTTPClient http;
-        String alertUrl = "http://db.lyuchan.com/alert?device=baby10&alertText=呼吸異常警告";
+        String alertUrl = "http://db.lyuchan.com/alert?device=baby10&alertText=%E4%B8%89%E5%8D%81%E7%A7%92%E5%85%A7%E6%B2%92%E6%9C%89%E5%81%B5%E6%B8%AC%E5%88%B0%E5%91%BC%E5%90%B8";
         Serial.print("警告請求URL: ");
         Serial.println(alertUrl);
+
+        
 
         WiFiClient client;
         http.begin(client, alertUrl);
