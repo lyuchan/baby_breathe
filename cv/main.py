@@ -5,20 +5,20 @@ import json
 import requests
 import base64
 import os
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 import time
 
 # 載入環境變數
-load_dotenv()
-serverIP = os.getenv("SERVER_IP")
-serverPort = os.getenv("SERVER_PORT")
+#load_dotenv()
+#serverIP = os.getenv("SERVER_IP")
+#serverPort = os.getenv("SERVER_PORT")
 
 ping_url = f"https://db.lyuchan.com/cam_ping?device_id=demobaby1"
 alert_url = "https://db.lyuchan.com/alertimg"
 device_id = "demobaby1"
 
 # 初始化攝影機
-cap = cv2.VideoCapture(8)
+cap = cv2.VideoCapture(3)
 
 # 設定攝影機解析度為1280x720
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
@@ -174,8 +174,8 @@ async def main():
         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
         
         # 在影像上繪製人臉方框
-        for (x, y, w, h) in faces:
-            cv2.rectangle(small_frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
+        #for (x, y, w, h) in faces:
+         #   cv2.rectangle(small_frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
         
         if len(faces) > 0:
             last_face_time = time.time()  # 更新最後偵測到人臉的時間

@@ -35,10 +35,10 @@ function createWindow(w, h, preloadjs, mainpage) {
     }
 
 }
-
+let win2;
 app.whenReady().then(() => {
     const win = createWindow(600, 900, 'preload.js', './web/index.html');//600x900
-    const win2 = createWindow(1920, 1080, 'preload.js', './web/display/index.html');//600x900
+
     ipcMain.on("toMain", (event, args) => {
         //tomain
         let res = JSON.parse(args);
@@ -175,7 +175,19 @@ app.whenReady().then(() => {
                         win.webContents.send("fromMain", JSON.stringify({ get: "userdata", userdata: userdata }));
                     }
                 });
+                break;
+            case 'display':
+                //console.log(win2)
+                if (win2 == undefined) {
+                    win2 = createWindow(1920, 1080, 'preload.js', './web/display/index.html');//600x900
+                    win2.on('close', (e) => {
+                        win2 = undefined;
+                    })
+                } else {
+                    win2.moveTop();
+                }
 
+                break;
             //getuserdata
         }
     });

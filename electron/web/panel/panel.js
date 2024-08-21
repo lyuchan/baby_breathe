@@ -128,8 +128,15 @@ function showinfo(deviceid) {
         confirmButtonText: '確定',
         cancelButtonText: '取消',
         preConfirm: () => {
-            settings(userdata.uuid);
+            //settings(userdata.uuid);
             return;
         }
     })
+}
+
+function display() {
+    data = {
+        get: 'display'
+    }
+    window.api.send("toMain", JSON.stringify(data));
 }
